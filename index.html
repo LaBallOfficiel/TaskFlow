@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>TaskFlow</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <span class="brand-icon">⚡</span>
+    <span class="brand-name">TaskFlow</span>
+  </div>
+  <div class="nav-points" title="Tes points">
+    <span>✦</span>
+    <span id="points-display">0</span>
+    <span class="points-label">pts</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn sound-btn" id="btn-sound" onclick="toggleSound()" title="Son">🔔</button>
+    <button class="nav-btn" id="btn-theme" onclick="showPanel('theme')"><span class="btn-icon">🎨</span><span class="btn-label">Thèmes</span></button>
+    <button class="nav-btn" id="btn-shop" onclick="showPanel('shop')"><span class="btn-icon">🛍️</span><span class="btn-label">Boutique</span></button>
+    <button class="nav-btn" id="btn-calendar" onclick="showPanel('calendar')"><span class="btn-icon">🗓️</span><span class="btn-label">Calendrier</span></button>
+    <button class="nav-btn" id="btn-stats" onclick="showPanel('stats')"><span class="btn-icon">📈</span><span class="btn-label">Stats</span></button>
+    <button class="nav-btn" id="btn-recap" onclick="showPanel('recap')"><span class="btn-icon">📊</span><span class="btn-label">Récap</span></button>
+    <button class="nav-btn" id="btn-sync" onclick="showPanel('sync')"><span class="btn-icon">🔗</span><span class="btn-label">Sync</span></button>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="main-todo">
+
+  <!-- STREAK + BEST STREAK BAR -->
+  <div class="streak-bar">
+    <div class="streak-info">
+      <span>🔥</span><span id="streak-count">0</span><span class="streak-text">jours de suite</span>
+    </div>
+    <div class="streak-info">
+      <span>🏆</span><span id="best-streak-count">0</span><span class="streak-text">record</span>
+    </div>
+    <div class="streak-info">
+      <span>✅</span><span id="tasks-today">0</span><span class="streak-text">aujourd'hui</span>
+    </div>
+  </div>
+
+  <!-- BONUS TASK -->
+  <div class="bonus-card" id="bonus-card" style="display:none">
+    <div class="bonus-header"><span class="bonus-star">⭐</span><span class="bonus-label">Tâche Bonus du jour</span><span class="bonus-pts-badge" id="bonus-pts-badge"></span></div>
+    <div class="bonus-body">
+      <label class="task-label">
+        <input type="checkbox" class="task-check" id="bonus-check" onchange="handleBonusTask(this)"/>
+        <span class="custom-check"></span>
+        <span class="task-name" id="bonus-task-name"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="category-card" id="cat-etude">
+    <div class="category-header" onclick="toggleCategory('etude')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-etude" onclick="openEmojiPicker('etude',event)">📚</span>
+        <h2 class="cat-title">Études</h2>
+        <span class="cat-count" id="count-etude">0/4</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-etude"></div></div>
+        <span class="chevron" id="chev-etude">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-etude">
+      <div class="task-item" data-task="etude-1" data-points="5" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Réviser</span></label><span class="task-pts">+5 ✦</span></div>
+      <div class="task-item" data-task="etude-2" data-points="3" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire les exercices de la semaine</span></label><span class="task-pts">+3 ✦</span></div>
+      <div class="task-item" data-task="etude-3" data-points="2" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire l'anglais</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="etude-4" data-points="5" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Réviser le code</span></label><span class="task-pts">+5 ✦</span></div>
+    </div>
+  </div>
+
+  <div class="category-card" id="cat-musique">
+    <div class="category-header" onclick="toggleCategory('musique')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-musique" onclick="openEmojiPicker('musique',event)">🎸</span>
+        <h2 class="cat-title">Musique</h2>
+        <span class="cat-count" id="count-musique">0/3</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-musique"></div></div>
+        <span class="chevron" id="chev-musique">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-musique">
+      <div class="task-item" data-task="musique-1" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Travailler la set liste du groupe</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="musique-2" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Travailler le solo de Hail to the King</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="musique-3" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire un TikTok</span></label><span class="task-pts">+1 ✦</span></div>
+    </div>
+  </div>
+
+  <div class="category-card" id="cat-autre">
+    <div class="category-header" onclick="toggleCategory('autre')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-autre" onclick="openEmojiPicker('autre',event)">⚡</span>
+        <h2 class="cat-title">Autre</h2>
+        <span class="cat-count" id="count-autre">0/5</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-autre"></div></div>
+        <span class="chevron" id="chev-autre">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-autre">
+      <div class="task-item" data-task="autre-1" data-points="4" data-cat="autre" data-days="1,2,3,4,5"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire séance de sport</span></label><div class="task-right"><span class="task-badge-days">Lun–Ven</span><span class="task-pts">+4 ✦</span></div></div>
+      <div class="task-item" data-task="autre-2" data-points="2" data-cat="autre"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Travailler le skate</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="autre-3" data-points="5" data-cat="autre"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Prendre le traitement</span></label><span class="task-pts">+5 ✦</span></div>
+      <div class="task-item" data-task="autre-4" data-points="5" data-cat="autre"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Hygiène</span></label><span class="task-pts">+5 ✦</span></div>
+      <div class="task-item" data-task="autre-5" data-points="3" data-cat="autre" data-days="1,2,3,4,5"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Aller au lycée</span></label><div class="task-right"><span class="task-badge-days">Lun–Ven</span><span class="task-pts">+3 ✦</span></div></div>
+    </div>
+  </div>
+
+  <div class="category-card" id="cat-jeux">
+    <div class="category-header" onclick="toggleCategory('jeux')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-jeux" onclick="openEmojiPicker('jeux',event)">🎮</span>
+        <h2 class="cat-title">Jeux</h2>
+        <span class="cat-count" id="count-jeux">0/5</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-jeux"></div></div>
+        <span class="chevron" id="chev-jeux">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-jeux">
+      <div class="task-item" data-task="jeux-1" data-points="2" data-cat="jeux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Ouvrir les boosters Pokémon</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="jeux-2" data-points="1" data-cat="jeux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Jouer à Pokémon GO</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="jeux-3" data-points="1" data-cat="jeux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Jouer à Arknights</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="jeux-4" data-points="1" data-cat="jeux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Gagner 5 niveaux Fortnite</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="jeux-5" data-points="2" data-cat="jeux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Gérer le royaume sur Sylvaris</span></label><span class="task-pts">+2 ✦</span></div>
+    </div>
+  </div>
+
+  <div class="category-card" id="cat-culture">
+    <div class="category-header" onclick="toggleCategory('culture')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-culture" onclick="openEmojiPicker('culture',event)">🎬</span>
+        <h2 class="cat-title">Culture</h2>
+        <span class="cat-count" id="count-culture">0/3</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-culture"></div></div>
+        <span class="chevron" id="chev-culture">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-culture">
+      <div class="task-item" data-task="culture-1" data-points="2" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Regarder un film ou série</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="culture-2" data-points="4" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Lire un livre</span></label><span class="task-pts">+4 ✦</span></div>
+      <div class="task-item" data-task="culture-3" data-points="2" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Écouter de la musique</span></label><span class="task-pts">+2 ✦</span></div>
+    </div>
+  </div>
+
+  <div class="category-card" id="cat-reseaux">
+    <div class="category-header" onclick="toggleCategory('reseaux')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-reseaux" onclick="openEmojiPicker('reseaux',event)">📱</span>
+        <h2 class="cat-title">Réseaux sociaux</h2>
+        <span class="cat-count" id="count-reseaux">0/3</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-reseaux"></div></div>
+        <span class="chevron" id="chev-reseaux">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-reseaux">
+      <div class="task-item" data-task="reseaux-1" data-points="1" data-cat="reseaux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire les flammes Snap</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="reseaux-2" data-points="1" data-cat="reseaux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire le BeReal</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="reseaux-3" data-points="1" data-cat="reseaux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Garder la série Twitch</span></label><span class="task-pts">+1 ✦</span></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- PANEL: THÈMES -->
+<div class="panel" id="panel-theme">
+  <div class="panel-header"><h2 class="panel-title">🎨 Thèmes</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
+  <p class="panel-subtitle">Choisissez votre ambiance</p>
+  <div class="theme-grid" id="theme-grid"></div>
+  <div class="custom-bg-section" id="custom-bg-section">
+    <div class="custom-bg-title">🖼️ Fond personnalisé <span class="custom-bg-price" id="custom-bg-price"></span></div>
+    <div id="custom-bg-controls"></div>
+  </div>
+</div>
+
+<!-- PANEL: BOUTIQUE -->
+<div class="panel" id="panel-shop">
+  <div class="panel-header"><h2 class="panel-title">🛍️ Boutique</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
+  <p class="panel-subtitle">Solde : <span id="shop-points">0</span> ✦</p>
+  <div class="shop-grid" id="shop-grid"></div>
+</div>
+
+<!-- PANEL: CALENDRIER -->
+<div class="panel" id="panel-calendar">
+  <div class="panel-header"><h2 class="panel-title">🗓️ Calendrier</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
+  <div class="cal-view-toggle">
+    <button class="cal-toggle-btn active" id="btn-cal-month" onclick="setCalView('month')">Mois</button>
+    <button class="cal-toggle-btn" id="btn-cal-week" onclick="setCalView('week')">Semaine</button>
+  </div>
+  <div class="calendar-nav">
+    <button class="cal-nav-btn" onclick="changeYear(-1)" id="cal-year-btn-prev">«</button>
+    <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+    <span class="cal-month-label" id="cal-label"></span>
+    <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+    <button class="cal-nav-btn" onclick="changeYear(1)" id="cal-year-btn-next">»</button>
+  </div>
+  <div class="calendar-grid" id="calendar-grid"></div>
+  <div class="streak-legend">🔥 = Tâche complétée · Clique sur un jour pour les détails</div>
+</div>
+
+<!-- PANEL: STATS -->
+<div class="panel panel-wide" id="panel-stats">
+  <div class="panel-header"><h2 class="panel-title">📈 Statistiques</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
+  <div class="recap-tabs">
+    <button class="recap-tab active" id="tab-stats-activity" onclick="switchStatsTab('activity')">Activité</button>
+    <button class="recap-tab" id="tab-stats-cats" onclick="switchStatsTab('cats')">Catégories</button>
+    <button class="recap-tab" id="tab-stats-badges" onclick="switchStatsTab('badges')">Badges</button>
+  </div>
+  <div class="recap-content" id="stats-content"></div>
+</div>
+
+<!-- PANEL: RÉCAP -->
+<div class="panel panel-wide" id="panel-recap">
+  <div class="panel-header"><h2 class="panel-title">📊 Récapitulatifs</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
+  <div class="recap-tabs">
+    <button class="recap-tab active" id="tab-monthly" onclick="switchRecapTab('monthly')">Mensuel</button>
+    <button class="recap-tab" id="tab-yearly" onclick="switchRecapTab('yearly')">Annuel</button>
+  </div>
+  <div class="recap-selector" id="recap-selector-monthly">
+    <select id="recap-month-select" onchange="renderRecapPanel()"></select>
+  </div>
+  <div class="recap-selector" id="recap-selector-yearly" style="display:none">
+    <select id="recap-year-select" onchange="renderRecapPanel()"></select>
+  </div>
+  <div class="recap-export-bar">
+    <button class="recap-export-btn" onclick="exportRecapImage()">📥 Exporter en image</button>
+  </div>
+  <div class="recap-content" id="recap-content"></div>
+</div>
+
+<!-- PANEL: SYNC -->
+<div class="panel" id="panel-sync">
+  <div class="panel-header"><h2 class="panel-title">🔗 Synchronisation</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
+  <div class="sync-body" id="sync-body"></div>
+</div>
+
+<!-- MODALS -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+
+<!-- DAY DETAIL MODAL -->
+<div class="day-modal" id="day-modal">
+  <div class="day-modal-inner">
+    <div class="day-modal-header">
+      <span id="day-modal-title">Lundi 1er janvier</span>
+      <button onclick="closeDayModal()">✕</button>
+    </div>
+    <div class="day-modal-body" id="day-modal-body"></div>
+  </div>
+</div>
+
+<!-- BADGE UNLOCK MODAL -->
+<div class="badge-modal" id="badge-modal">
+  <div class="badge-modal-inner">
+    <div class="badge-icon-big" id="badge-modal-icon"></div>
+    <div class="badge-modal-name" id="badge-modal-name"></div>
+    <div class="badge-modal-desc" id="badge-modal-desc"></div>
+    <button class="recap-modal-btn" onclick="closeBadgeModal()">Super ! 🎉</button>
+  </div>
+</div>
+
+<!-- AUTO RECAP MODAL -->
+<div class="recap-modal" id="recap-modal">
+  <div class="recap-modal-inner">
+    <div class="recap-modal-header">
+      <span class="recap-modal-icon">🎉</span>
+      <h2 id="recap-modal-title">Récap du mois</h2>
+      <button class="recap-modal-close" onclick="closeRecapModal()">✕</button>
+    </div>
+    <div class="recap-modal-body" id="recap-modal-body"></div>
+    <div class="recap-modal-footer">
+      <button class="recap-modal-btn" onclick="closeRecapModal()">Continuer !</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMOJI PICKER -->
+<div class="emoji-picker" id="emoji-picker"></div>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- NOTIFICATION PANEL inside settings (rendered in sync body) -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
