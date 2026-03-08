@@ -5,9 +5,9 @@ let state = {
   points: 0,
   activeTheme: 'default',
   unlockedThemes: ['default', 'light'],
-  checkedTasks: {},       // { 'YYYY-MM-DD': { taskId: true } }
-  pointsHistory: {},      // { 'YYYY-MM': { earned, spent } }
-  themeUsage: {},         // { 'YYYY-MM': { themeId: minutes } }
+  checkedTasks: {},
+  pointsHistory: {},
+  themeUsage: {},
   lastThemeSet: null,
   shownRecaps: [],
   calYear: new Date().getFullYear(),
@@ -18,11 +18,13 @@ let state = {
   soundOn: true,
   customBgUnlocked: false,
   customBg: null,
-  categoryIcons: {},      // { catId: emoji }
+  categoryIcons: {},
   unlockedBadges: [],
-  bonusTask: null,        // { taskId, date, done }
-  notifications: {},      // { taskId: true }
+  bonusTask: null,
+  notifications: {},
   bestStreak: 0,
+  streakGoal: null,      // { days, reward, setAt } — current streak objective
+  boost: null,           // { type:'x2'|'+50%', startTime, endTime, date }
 };
 
 // =====================================================
@@ -191,7 +193,10 @@ function loadState() {
     const s = localStorage.getItem('taskflow_v2') || localStorage.getItem('taskflow_state');
     if (s) {
       const parsed = JSON.parse(s);
-      state = { ...state, ...parsed };
+      // Merge carefully — don't overwrite with undefined/null for new fields
+      Object.keys(parsed).forEach(k => {
+        if (parsed[k] !== undefined) state[k] = parsed[k];
+      });
     }
   } catch(e){}
 }
@@ -216,9 +221,9 @@ function init() {
   if (!state.lastThemeSet) state.lastThemeSet = { themeId: state.activeTheme, timestamp: Date.now() };
 
   applyCategoryIcons();
-  applyRecurringVisibility();
   initBonusTask();
   restoreChecks();
+  applyRecurringVisibility();
   updatePoints();
   updateAllCounts();
   updateStreak();
@@ -229,6 +234,9 @@ function init() {
   updateSoundBtn();
   checkAutoRecap();
   scheduleNotifications();
+  initDailyBoost();
+  renderStreakGoalBar();
+  renderBoostBanner();
 }
 
 // =====================================================
@@ -323,34 +331,55 @@ function handleTask(checkbox) {
   if (!state.checkedTasks[today]) state.checkedTasks[today] = {};
   if (!state.pointsHistory[mk]) state.pointsHistory[mk] = { earned:0, spent:0 };
 
-  if (checkbox.checked) {
-    state.checkedTasks[today][taskId] = true;
-    state.points += pts;
-    state.pointsHistory[mk].earned += pts;
-    item.classList.add('done');
-    playSound('check');
-    showToast(`+${pts} ✦ points gagnés !`);
-    burstEffect(item);
-    // Early bird: 5+ real tasks before 7:00
-    const h = new Date().getHours();
-    if (h < 7) {
-      const realToday = Object.keys(state.checkedTasks[today]).filter(k => k !== 'bonus' && state.checkedTasks[today][k]);
-      if (realToday.length >= 5) state._earlyBirdToday = true;
-    }
-    // Check free treat unlock (5 tasks done)
-    checkFreeTreat(today);
-    // Check if whole category done
-    checkCategoryComplete(cat, today);
-  } else {
-    delete state.checkedTasks[today][taskId];
-    state.points = Math.max(0, state.points - pts);
-    state.pointsHistory[mk].earned = Math.max(0, state.pointsHistory[mk].earned - pts);
-    item.classList.remove('done');
+  // Block unchecking — tasks are irreversible for the day
+  if (!checkbox.checked) {
+    checkbox.checked = true;
+    showToast('🔒 Tu ne peux pas décocher une tâche de la journée !');
+    return;
   }
 
+  // Already checked?
+  if (state.checkedTasks[today][taskId]) return;
+
+  // Apply boost
+  const finalPts = applyBoost(pts);
+  const boosted = finalPts > pts;
+
+  state.checkedTasks[today][taskId] = true;
+  state.points += finalPts;
+  state.pointsHistory[mk].earned += finalPts;
+  item.classList.add('done');
+  checkbox.disabled = true;
+  playSound('check');
+  showToast(boosted
+    ? `🚀 +${finalPts} ✦ (BOOST ${state.boost.type} !)` 
+    : `+${finalPts} ✦ points gagnés !`);
+  burstEffect(item);
+
+  // Early bird: 5+ real tasks before 7:00
+  const h = now.getHours();
+  if (h < 7) {
+    const realToday = Object.keys(state.checkedTasks[today]).filter(k => k !== 'bonus' && state.checkedTasks[today][k]);
+    if (realToday.length >= 5) state._earlyBirdToday = true;
+  }
+  // Free treat at 5 tasks
+  checkFreeTreat(today);
+  // Category complete
+  checkCategoryComplete(cat, today);
+
   updatePoints(); updateAllCounts(); updateStreak(); renderCalendar();
-  checkBadges(); saveState();
-  // Refresh companion mood if panel open
+  checkBadges();
+
+  // Check streak goal after updating streak
+  checkStreakGoalReached();
+
+  // Prompt goal if streak just hit 1 for first time
+  const streak = getStreakCount();
+  if (streak === 1 && !state.streakGoal) {
+    setTimeout(() => checkStreakGoalOnFirstDay(), 600);
+  }
+
+  saveState();
   const moodEl = document.getElementById('companion-mood');
   if (moodEl) moodEl.textContent = getCompanionMood();
 }
@@ -382,11 +411,15 @@ function restoreChecks() {
     const item = cb.closest('.task-item');
     if (!item) return;
     const taskId = item.dataset.task;
-    if (taskId && todayTasks[taskId]) { cb.checked = true; item.classList.add('done'); }
+    if (taskId && todayTasks[taskId]) {
+      cb.checked = true;
+      item.classList.add('done');
+      cb.disabled = true;
+    }
   });
   if (state.bonusTask?.done) {
     const bc = document.getElementById('bonus-check');
-    if (bc) bc.checked = true;
+    if (bc) { bc.checked = true; bc.disabled = true; }
   }
 }
 
@@ -650,7 +683,6 @@ function applyTheme(id) {
   if (state.customBg) document.body.classList.add('has-custom-bg');
   state.activeTheme = id;
   updateFavicon();
-  if (musicOn) loadMusicForTheme(id);
 }
 function renderThemeGrid() {
   const grid = document.getElementById('theme-grid');
@@ -1781,96 +1813,184 @@ function checkFreeTreat(today) {
 }
 
 // =====================================================
-// ===== MUSIC SYSTEM (YouTube iframe) =================
+// ===== STREAK GOAL SYSTEM ============================
 // =====================================================
+const STREAK_GOALS = [
+  { days:7,   reward:10,  label:'7 jours',   icon:'🔥' },
+  { days:15,  reward:20,  label:'15 jours',  icon:'💥' },
+  { days:30,  reward:30,  label:'30 jours',  icon:'🌟' },
+  { days:60,  reward:50,  label:'60 jours',  icon:'👑' },
+  { days:100, reward:75,  label:'100 jours', icon:'🏆' },
+  { days:365, reward:150, label:'1 an',      icon:'🗓️' },
+];
 
-const THEME_MUSIC = {
-  default:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',    // Lo-fi
-  light:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  aurora:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  sunset:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',     // Chill beats
-  mint:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  rose:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  ocean:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',      // Cinematic
-  gold:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
-  neon:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  slate:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  cherry:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
-  cyber:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  strangerthings:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  piratescaraibes:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  mercredi:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  netflix:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  starwars:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  avatar:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  metallica:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',  // Rock/Metal
-  slipknot:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
-  bfmv:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
-  acdc:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
-  avenged:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
-  nirvana:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
-  cosmos:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  nebula:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  blackhole:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  mars:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  galaxy:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  minecraft:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
-  zelda:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
-  gta:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
-  cyberpunk:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  pokemon:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
-  forest:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  sakura:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  ocean2:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  desert:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
-  arctic:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  halloween:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  vampire:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  witch:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  zombie:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-  ghost:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
-};
-
-const MUSIC_LABELS = {
-  'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9': 'Lo-fi Hip Hop 🎧',
-  'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC': 'Chill Beats 🎮',
-  'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-': 'Cinematic Ambient 🌌',
-  'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde': 'Rock / Metal 🤘',
-};
-
-let musicOn = false;
-
-function toggleMusic() {
-  musicOn = !musicOn;
-  updateMusicBtn();
-  if (musicOn) {
-    loadMusicForTheme(state.activeTheme);
-  } else {
-    stopMusic();
-    showToast('🎵 Musique arrêtée');
+function checkStreakGoalOnFirstDay() {
+  // Called when streak reaches exactly 1 (new streak started)
+  if (!state.streakGoal) {
+    openStreakGoalModal();
   }
 }
 
-function updateMusicBtn() {
-  const btn = document.getElementById('btn-music');
-  if (!btn) return;
-  btn.textContent = musicOn ? '🔊' : '🎵';
-  btn.classList.toggle('active', musicOn);
+function openStreakGoalModal() {
+  const modal = document.getElementById('streak-goal-modal');
+  if (!modal) return;
+  modal.classList.add('open');
 }
 
-function loadMusicForTheme(themeId) {
-  const playlistId = THEME_MUSIC[themeId] || THEME_MUSIC['default'];
-  const label = MUSIC_LABELS[playlistId] || 'Musique d\'ambiance';
-  const iframe = document.getElementById('music-iframe');
-  if (!iframe) return;
-  iframe.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&loop=1&mute=0`;
-  if (musicOn) showToast(`🎵 ${label}`);
+function closeStreakGoalModal() {
+  const modal = document.getElementById('streak-goal-modal');
+  if (modal) modal.classList.remove('open');
 }
 
-function stopMusic() {
-  const iframe = document.getElementById('music-iframe');
-  if (iframe) iframe.src = '';
+function selectStreakGoal(days, reward) {
+  state.streakGoal = { days, reward, setAt: getStreakCount() };
+  saveState();
+  closeStreakGoalModal();
+  showToast(`🎯 Objectif fixé : ${days} jours ! Récompense : +${reward} ✦`);
+  renderStreakGoalBar();
 }
+
+function checkStreakGoalReached() {
+  if (!state.streakGoal) return;
+  const streak = getStreakCount();
+  const goal = STREAK_GOALS.find(g => g.days === state.streakGoal.days);
+  if (!goal) return;
+  if (streak >= state.streakGoal.days) {
+    // Give reward
+    state.points += state.streakGoal.reward;
+    const mk = getMonthKey(new Date().getFullYear(), new Date().getMonth());
+    if (!state.pointsHistory[mk]) state.pointsHistory[mk] = { earned:0, spent:0 };
+    state.pointsHistory[mk].earned += state.streakGoal.reward;
+    updatePoints();
+    showGoalReachedModal(goal);
+    state.streakGoal = null;
+    saveState();
+    // After closing modal, prompt new goal
+    setTimeout(() => openStreakGoalModal(), 2500);
+  }
+}
+
+function showGoalReachedModal(goal) {
+  const modal = document.getElementById('goal-reached-modal');
+  if (!modal) return;
+  document.getElementById('goal-reached-icon').textContent = goal.icon;
+  document.getElementById('goal-reached-title').textContent = `Objectif ${goal.label} atteint !`;
+  document.getElementById('goal-reached-reward').textContent = `+${goal.reward} ✦ récompense !`;
+  modal.classList.add('open');
+  playSound('badge');
+  launchConfetti();
+}
+
+function closeGoalReachedModal() {
+  const modal = document.getElementById('goal-reached-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+function renderStreakGoalBar() {
+  const bar = document.getElementById('streak-goal-bar');
+  if (!bar) return;
+  if (!state.streakGoal) {
+    bar.innerHTML = `<span class="streak-goal-empty" onclick="openStreakGoalModal()">🎯 Fixer un objectif de série</span>`;
+    return;
+  }
+  const streak = getStreakCount();
+  const pct = Math.min(100, Math.round((streak / state.streakGoal.days) * 100));
+  const goal = STREAK_GOALS.find(g => g.days === state.streakGoal.days);
+  bar.innerHTML = `
+    <div class="streak-goal-info" onclick="openStreakGoalModal()">
+      <span>${goal?.icon || '🎯'} Objectif : ${state.streakGoal.days} jours</span>
+      <span class="streak-goal-reward">+${state.streakGoal.reward} ✦</span>
+    </div>
+    <div class="streak-goal-progress">
+      <div class="streak-goal-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="streak-goal-label">${streak} / ${state.streakGoal.days} jours (${pct}%)</div>
+  `;
+}
+
+// =====================================================
+// ===== BOOST SYSTEM ==================================
+// =====================================================
+function initDailyBoost() {
+  const today = getTodayKey();
+  // Reset boost if it's a new day
+  if (!state.boost || state.boost.date !== today) {
+    // Random start between 6:00 and 22:00 (so 2h window ends by midnight)
+    const startHour = 6 + Math.floor(Math.random() * 16);
+    const startMin  = Math.floor(Math.random() * 60);
+    const type = Math.random() < 0.5 ? 'x2' : '+50%';
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMin, 0);
+    const end   = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+    state.boost = {
+      type, date: today,
+      startTime: start.getTime(),
+      endTime:   end.getTime(),
+      announced: false,
+    };
+    saveState();
+  }
+  renderBoostBanner();
+  // Check every minute
+  setInterval(() => { renderBoostBanner(); }, 60000);
+}
+
+function isBoostActive() {
+  if (!state.boost) return false;
+  const now = Date.now();
+  return now >= state.boost.startTime && now <= state.boost.endTime;
+}
+
+function getBoostMultiplier() {
+  if (!isBoostActive()) return null;
+  return state.boost.type;
+}
+
+function applyBoost(basePts) {
+  const type = getBoostMultiplier();
+  if (!type) return basePts;
+  if (type === 'x2') return basePts * 2;
+  if (type === '+50%') return basePts + Math.ceil(basePts * 0.5);
+  return basePts;
+}
+
+function renderBoostBanner() {
+  const banner = document.getElementById('boost-banner');
+  if (!banner || !state.boost) { if (banner) banner.className = 'boost-banner'; return; }
+  const now = Date.now();
+  const start = state.boost.startTime;
+  const end   = state.boost.endTime;
+  const today = getTodayKey();
+  if (state.boost.date !== today) { banner.className = 'boost-banner'; return; }
+
+  if (now < start) {
+    const diffMs = start - now;
+    const diffH  = Math.floor(diffMs / 3600000);
+    const diffM  = Math.floor((diffMs % 3600000) / 60000);
+    const startTime = new Date(start);
+    const hh = String(startTime.getHours()).padStart(2,'0');
+    const mm = String(startTime.getMinutes()).padStart(2,'0');
+    banner.className = 'boost-banner upcoming';
+    banner.innerHTML = `⚡ Boost <strong>${state.boost.type}</strong> dans ${diffH > 0 ? diffH+'h ' : ''}${diffM}min — démarre à <strong>${hh}:${mm}</strong>`;
+  } else if (now >= start && now <= end) {
+    const diffMs = end - now;
+    const diffM  = Math.floor(diffMs / 60000);
+    const diffS  = Math.floor((diffMs % 60000) / 1000);
+    banner.className = 'boost-banner active';
+    banner.innerHTML = `🚀 BOOST <strong>${state.boost.type}</strong> ACTIF — encore ${diffM}m ${diffS}s !`;
+    setTimeout(() => renderBoostBanner(), 1000);
+  } else {
+    banner.className = 'boost-banner';
+    banner.innerHTML = '';
+  }
+}
+
+// =====================================================
+// ===== MUSIC (removed) ===============================
+// =====================================================
+function toggleMusic() {}
+function updateMusicBtn() {}
+function loadMusicForTheme() {}
 
 // =====================================================
 // ===== START =========================================

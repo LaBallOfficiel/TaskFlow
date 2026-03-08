@@ -29,13 +29,15 @@
     <button class="nav-btn" id="btn-theme" onclick="showPanel('theme')"><span class="btn-icon">🎨</span><span class="btn-label">Thèmes</span></button>
     <button class="nav-btn" id="btn-shop" onclick="showPanel('shop')"><span class="btn-icon">🛍️</span><span class="btn-label">Boutique</span></button>
     <button class="nav-btn" id="btn-sync" onclick="showPanel('sync')"><span class="btn-icon">🔗</span><span class="btn-label">Sync</span></button>
-    <button class="nav-btn sound-btn" id="btn-music" onclick="toggleMusic()" title="Musique d'ambiance">🎵</button>
     <button class="nav-btn sound-btn" id="btn-sound" onclick="toggleSound()" title="Son">🔔</button>
   </div>
 </nav>
 
 <!-- MAIN CONTENT -->
 <main class="main-content" id="main-todo">
+
+  <!-- BOOST BANNER -->
+  <div class="boost-banner" id="boost-banner" style="display:none"></div>
 
   <!-- STREAK + BEST STREAK BAR -->
   <div class="streak-bar">
@@ -49,6 +51,9 @@
       <span>✅</span><span id="tasks-today">0</span><span class="streak-text">aujourd'hui</span>
     </div>
   </div>
+
+  <!-- STREAK GOAL BAR -->
+  <div class="streak-goal-bar" id="streak-goal-bar"></div>
 
   <!-- BONUS TASK -->
   <div class="bonus-card" id="bonus-card" style="display:none">
@@ -330,14 +335,36 @@
 <!-- CONFETTI CANVAS -->
 <canvas id="confetti-canvas"></canvas>
 
-<!-- MUSIC PLAYER (hidden YouTube iframe) -->
-<div style="position:fixed;bottom:-300px;left:0;width:1px;height:1px;overflow:hidden;pointer-events:none">
-  <iframe id="music-iframe" width="1" height="1" frameborder="0"
-    allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<div class="toast" id="toast"></div>
+
+<!-- STREAK GOAL MODAL -->
+<div class="streak-goal-modal" id="streak-goal-modal">
+  <div class="streak-goal-modal-inner">
+    <div class="streak-goal-modal-header">
+      <span>🎯 Choisis ton objectif de série</span>
+      <button onclick="closeStreakGoalModal()">✕</button>
+    </div>
+    <p class="streak-goal-modal-sub">Atteins ton objectif pour gagner des points !</p>
+    <div class="streak-goal-options">
+      <button class="streak-goal-option" onclick="selectStreakGoal(7,10)">🔥 7 jours<span>+10 ✦</span></button>
+      <button class="streak-goal-option" onclick="selectStreakGoal(15,20)">💥 15 jours<span>+20 ✦</span></button>
+      <button class="streak-goal-option" onclick="selectStreakGoal(30,30)">🌟 30 jours<span>+30 ✦</span></button>
+      <button class="streak-goal-option" onclick="selectStreakGoal(60,50)">👑 60 jours<span>+50 ✦</span></button>
+      <button class="streak-goal-option" onclick="selectStreakGoal(100,75)">🏆 100 jours<span>+75 ✦</span></button>
+      <button class="streak-goal-option" onclick="selectStreakGoal(365,150)">🗓️ 1 an<span>+150 ✦</span></button>
+    </div>
+  </div>
 </div>
 
-<!-- NOTIFICATION PANEL inside settings (rendered in sync body) -->
-<div class="toast" id="toast"></div>
+<!-- GOAL REACHED MODAL -->
+<div class="goal-reached-modal" id="goal-reached-modal">
+  <div class="goal-reached-inner">
+    <div class="goal-reached-icon-big" id="goal-reached-icon">🏆</div>
+    <div class="goal-reached-title" id="goal-reached-title">Objectif atteint !</div>
+    <div class="goal-reached-reward" id="goal-reached-reward">+30 ✦</div>
+    <button class="recap-modal-btn" onclick="closeGoalReachedModal()">Continuer ! 🎉</button>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>

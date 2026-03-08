@@ -358,6 +358,42 @@ body.has-custom-bg::before{content:'';position:fixed;inset:0;background:var(--cu
 .companion-level-badge{background:var(--accent);color:#fff;border-radius:999px;padding:3px 12px;font-family:var(--font-display);font-weight:700;font-size:12px;margin-top:4px}
 .companion-mood{font-size:13px;color:var(--text2);margin-top:8px;text-align:center;font-style:italic;min-height:20px;padding:0 20px}
 
+/* ===== BOOST BANNER ===== */
+.boost-banner{display:none;align-items:center;justify-content:center;padding:8px 16px;border-radius:12px;font-size:13px;font-weight:600;margin:0 0 10px 0;gap:8px;transition:all .3s}
+.boost-banner.upcoming{display:flex;background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.3);color:#f5c518}
+.boost-banner.active{display:flex;background:linear-gradient(90deg,rgba(255,45,120,.2),rgba(124,92,252,.2));border:1px solid var(--accent);color:var(--accent);animation:boostPulse 1.5s infinite}
+@keyframes boostPulse{0%,100%{box-shadow:0 0 0 0 rgba(124,92,252,.3)}50%{box-shadow:0 0 0 6px rgba(124,92,252,0)}}
+
+/* ===== STREAK GOAL BAR ===== */
+.streak-goal-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;cursor:pointer;transition:border-color var(--transition)}
+.streak-goal-bar:hover{border-color:var(--accent)}
+.streak-goal-empty{color:var(--text2);font-size:13px}
+.streak-goal-info{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;margin-bottom:6px}
+.streak-goal-reward{color:var(--accent)}
+.streak-goal-progress{background:var(--surface2);border-radius:999px;height:6px;overflow:hidden}
+.streak-goal-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .4s ease}
+.streak-goal-label{font-size:11px;color:var(--text2);margin-top:4px;text-align:right}
+
+/* ===== STREAK GOAL MODAL ===== */
+.streak-goal-modal{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+.streak-goal-modal.open{display:flex}
+.streak-goal-modal-inner{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;width:min(420px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.streak-goal-modal-header{display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:700;margin-bottom:8px}
+.streak-goal-modal-header button{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer}
+.streak-goal-modal-sub{color:var(--text2);font-size:13px;margin-bottom:16px}
+.streak-goal-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.streak-goal-option{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 12px;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all var(--transition);font-family:var(--font-body)}
+.streak-goal-option span{font-size:12px;color:var(--accent);font-weight:700}
+.streak-goal-option:hover{border-color:var(--accent);background:var(--surface);transform:translateY(-2px)}
+
+/* ===== GOAL REACHED MODAL ===== */
+.goal-reached-modal{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+.goal-reached-modal.open{display:flex}
+.goal-reached-inner{background:var(--surface);border:2px solid var(--accent);border-radius:24px;padding:36px 28px;text-align:center;width:min(360px,90vw);box-shadow:var(--shadow-accent)}
+.goal-reached-icon-big{font-size:64px;margin-bottom:12px}
+.goal-reached-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px}
+.goal-reached-reward{font-size:28px;font-weight:800;color:var(--accent);margin-bottom:24px}
+
 .companion-favicon-btn{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:5px 14px;font-size:11px;color:var(--text2);cursor:pointer;transition:all var(--transition);margin-top:6px;font-family:var(--font-body)}
 .companion-favicon-btn:hover{border-color:var(--accent);color:var(--accent)}
 .companion-favicon-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
