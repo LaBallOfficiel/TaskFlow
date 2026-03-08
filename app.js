@@ -258,6 +258,11 @@ function init() {
   if (!state.companion) state.companion = { animal:'dog', level:1, xp:0 };
   if (!state.companionSkins) state.companionSkins = [];
 
+  // Cap all built-in task points to 5
+  Object.values(taskMeta).forEach(t => { if (t.pts > 5) t.pts = 5; });
+  // Cap custom tasks too
+  Object.values(state.customTasks || {}).forEach(t => { if (t.pts > 5) t.pts = 5; });
+
   applyTheme(state.activeTheme);
   applyCustomBg();
   if (!state.lastThemeSet) state.lastThemeSet = { themeId: state.activeTheme, timestamp: Date.now() };
@@ -295,12 +300,12 @@ function getDayKey(y,m,d) { return `${y}-${String(m+1).padStart(2,'0')}-${String
 // ===== RECURRING TASKS ===============================
 // =====================================================
 function applyRecurringVisibility() {
+  if (editMode) return; // En mode édition tout reste visible
   const dow = new Date().getDay();
   document.querySelectorAll('.task-item[data-days]').forEach(item => {
     const days = item.dataset.days.split(',').map(Number);
     item.classList.toggle('weekend-hidden', !days.includes(dow));
   });
-  // Hide lycée category entirely on weekends
   const lyceeCat = document.getElementById('cat-lycee');
   if (lyceeCat) {
     const isWeekend = dow === 0 || dow === 6;
@@ -746,6 +751,7 @@ function applyTheme(id) {
   if (state.customBg) document.body.classList.add('has-custom-bg');
   state.activeTheme = id;
   updateFavicon();
+  startThemeBg(id);
 }
 function renderThemeGrid() {
   const grid = document.getElementById('theme-grid');
@@ -2068,6 +2074,11 @@ function toggleEditMode() {
   const addCatBtn = document.getElementById('add-cat-btn-container');
   if (addCatBtn) addCatBtn.style.display = editMode ? 'block' : 'none';
   rebuildTaskLists();
+  // Open all categories in edit mode
+  if (editMode) {
+    document.querySelectorAll('.task-list').forEach(l => l.classList.add('open'));
+    document.querySelectorAll('.chevron').forEach(c => c.classList.add('open'));
+  }
 }
 
 function rebuildTaskLists() {
@@ -2204,8 +2215,8 @@ function insertCategoryCard(catId, catInfo) {
 function addTaskToCategory(catId, catLabel) {
   const name = prompt('Nom de la tâche :');
   if (!name || !name.trim()) return;
-  const ptsRaw = prompt('Points (1-20) :', '3');
-  const pts = Math.max(1, Math.min(20, parseInt(ptsRaw) || 3));
+  const ptsRaw = prompt('Points (1-5) :', '3');
+  const pts = Math.max(1, Math.min(5, parseInt(ptsRaw) || 3));
   const daysRaw = prompt('Jours (1=Lun,2=Mar,3=Mer,4=Jeu,5=Ven,6=Sam,0=Dim)\nLaisse vide pour tous les jours.\nEx: 1,2,3,4,5 pour Lun-Ven', '');
   let days = null;
   if (daysRaw && daysRaw.trim()) {
@@ -2252,8 +2263,8 @@ function editTaskRename(taskId) {
 function editTaskPts(taskId) {
   const tasks = getEffectiveTasks();
   const current = tasks[taskId]?.pts || 1;
-  const newPts = prompt('Nouveau nombre de points (1-20) :', current);
-  const pts = Math.max(1, Math.min(20, parseInt(newPts) || current));
+  const newPts = prompt('Nouveau nombre de points (1-5) :', current);
+  const pts = Math.max(1, Math.min(5, parseInt(newPts) || current));
   if (taskMeta[taskId]) taskMeta[taskId].pts = pts;
   if (state.customTasks[taskId]) state.customTasks[taskId].pts = pts;
   saveState();
@@ -2325,6 +2336,237 @@ function deleteCategory(catId) {
   rebuildTaskLists();
 }
 
+// =====================================================
+// ===== THEME BACKGROUNDS =============================
+// =====================================================
+let themeBgAnimId = null;
+
+function stopThemeBg() {
+  if (themeBgAnimId) { cancelAnimationFrame(themeBgAnimId); themeBgAnimId = null; }
+  const canvas = document.getElementById('theme-bg-canvas');
+  if (canvas) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+}
+
+function startThemeBg(themeId) {
+  stopThemeBg();
+  const canvas = document.getElementById('theme-bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+
+  // Star field themes
+  const starThemes = ['starwars','cosmos','nebula','blackhole','galaxy','mars','strangerthings','avenged'];
+  // Pixel/matrix themes
+  const matrixThemes = ['minecraft'];
+  // Rain/drip themes
+  const rainThemes = ['cyberpunk'];
+  // Firefly themes
+  const fireflyThemes = ['forest','zelda','avatar','witch'];
+  // Snow/particles themes
+  const snowThemes = ['arctic','ghost'];
+  // Ember themes
+  const emberThemes = ['halloween','vampire','slipknot','acdc','metallica'];
+  // Sakura petal themes
+  const petalThemes = ['sakura','piratescaraibes'];
+  // Bubble themes
+  const bubbleThemes = ['ocean','ocean2'];
+
+  if (starThemes.includes(themeId)) {
+    const stars = Array.from({length:200},()=>({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r: Math.random()*1.8+.2,
+      speed: Math.random()*.3+.05,
+      twinkle: Math.random()*Math.PI*2,
+      color: themeId==='strangerthings'?`hsl(${Math.random()*30+340},80%,70%)`:
+             themeId==='nebula'?`hsl(${Math.random()*60+280},70%,75%)`:
+             themeId==='mars'?`hsl(${Math.random()*30+10},60%,70%)`:'white'
+    }));
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      stars.forEach(s => {
+        s.twinkle += .02;
+        const alpha = .4+Math.sin(s.twinkle)*.4;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = s.color.replace(')',`,${alpha})`).replace('hsl','hsla');
+        ctx.fill();
+        if (themeId === 'starwars') { s.y += s.speed; if (s.y > canvas.height) { s.y = 0; s.x = Math.random()*canvas.width; } }
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (matrixThemes.includes(themeId)) {
+    // Minecraft: falling pixel blocks
+    const cols = Math.floor(canvas.width / 16);
+    const drops = Array.from({length:cols},()=>Math.random()*-canvas.height/16|0);
+    const chars = '█▓▒░⬛🌿'.split('');
+    const draw = () => {
+      ctx.fillStyle = 'rgba(26,26,10,0.15)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.font = '14px "Press Start 2P", monospace';
+      drops.forEach((y,i) => {
+        const char = chars[Math.floor(Math.random()*chars.length)];
+        const greenVal = Math.floor(Math.random()*80+80);
+        ctx.fillStyle = `rgba(80,${greenVal},40,0.6)`;
+        ctx.fillText(char, i*16, y*16);
+        if (y*16 > canvas.height && Math.random() > .97) drops[i] = 0;
+        drops[i]++;
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (rainThemes.includes(themeId)) {
+    // Cyberpunk: neon rain streaks
+    const cols = Math.floor(canvas.width / 14);
+    const drops = Array.from({length:cols},()=>Math.random()*-50);
+    const draw = () => {
+      ctx.fillStyle = 'rgba(3,0,20,0.2)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.font = '12px "Orbitron", monospace';
+      drops.forEach((y,i) => {
+        const isYellow = Math.random() > .7;
+        ctx.fillStyle = isYellow ? 'rgba(252,238,9,0.5)' : 'rgba(255,42,109,0.4)';
+        ctx.fillText(String.fromCharCode(33+Math.floor(Math.random()*90)), i*14, y);
+        if (y > canvas.height && Math.random() > .95) drops[i] = 0;
+        drops[i] += 3;
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (fireflyThemes.includes(themeId)) {
+    const color = themeId==='zelda'?'rgba(255,220,50,'
+                : themeId==='avatar'?'rgba(0,180,216,'
+                : themeId==='witch'?'rgba(160,80,255,'
+                : 'rgba(80,200,120,';
+    const flies = Array.from({length:60},()=>({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      vx:(Math.random()-.5)*.5, vy:(Math.random()-.5)*.5,
+      r:Math.random()*2.5+1, phase:Math.random()*Math.PI*2
+    }));
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      flies.forEach(f => {
+        f.phase += .04; f.x += f.vx; f.y += f.vy;
+        if (f.x<0||f.x>canvas.width) f.vx*=-1;
+        if (f.y<0||f.y>canvas.height) f.vy*=-1;
+        const alpha = (.3+Math.sin(f.phase)*.3).toFixed(2);
+        const grd = ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r*4);
+        grd.addColorStop(0,color+''+alpha+')');
+        grd.addColorStop(1,color+'0)');
+        ctx.beginPath(); ctx.arc(f.x,f.y,f.r*4,0,Math.PI*2);
+        ctx.fillStyle = grd; ctx.fill();
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (snowThemes.includes(themeId)) {
+    const flakes = Array.from({length:120},()=>({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      r:Math.random()*2+.5, speed:Math.random()*1+.3, drift:Math.random()*.5-.25
+    }));
+    const col = themeId==='ghost'?'rgba(180,196,222,':'rgba(200,240,255,';
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      flakes.forEach(f => {
+        f.y += f.speed; f.x += f.drift;
+        if (f.y > canvas.height) { f.y=0; f.x=Math.random()*canvas.width; }
+        if (f.x > canvas.width) f.x=0; if (f.x<0) f.x=canvas.width;
+        ctx.beginPath(); ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+        ctx.fillStyle = col+'0.5)'; ctx.fill();
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (emberThemes.includes(themeId)) {
+    const col = themeId==='acdc'||themeId==='metallica'?[255,160,0]:[200,30,0];
+    const embers = Array.from({length:80},()=>({
+      x:Math.random()*canvas.width, y:canvas.height+10,
+      vx:(Math.random()-.5)*.8, vy:-(Math.random()*1.5+.5),
+      r:Math.random()*2+.5, life:Math.random()
+    }));
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      embers.forEach(e => {
+        e.life -= .004; e.x += e.vx; e.y += e.vy; e.vx += (Math.random()-.5)*.1;
+        if (e.life <= 0) { e.life=1; e.x=Math.random()*canvas.width; e.y=canvas.height+10; }
+        ctx.beginPath(); ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(${col[0]},${col[1]},${col[2]},${e.life*.5})`;
+        ctx.fill();
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (petalThemes.includes(themeId)) {
+    const col = themeId==='sakura'?'rgba(255,160,180,':'rgba(220,160,60,';
+    const petals = Array.from({length:50},()=>({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      r:Math.random()*4+2, speed:Math.random()*1+.3,
+      swing:Math.random()*Math.PI*2, swingSpeed:Math.random()*.02+.01, rot:Math.random()*Math.PI*2
+    }));
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      petals.forEach(p => {
+        p.y += p.speed; p.swing += p.swingSpeed; p.x += Math.sin(p.swing)*.5; p.rot += .02;
+        if (p.y > canvas.height+10) { p.y=-10; p.x=Math.random()*canvas.width; }
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+        ctx.beginPath(); ctx.ellipse(0,0,p.r,p.r*.6,0,0,Math.PI*2);
+        ctx.fillStyle = col+'0.35)'; ctx.fill(); ctx.restore();
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  } else if (bubbleThemes.includes(themeId)) {
+    const bubbles = Array.from({length:40},()=>({
+      x:Math.random()*canvas.width, y:canvas.height+20,
+      r:Math.random()*8+3, speed:Math.random()*.5+.2, drift:Math.random()*.4-.2
+    }));
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      bubbles.forEach(b => {
+        b.y -= b.speed; b.x += b.drift;
+        if (b.y < -20) { b.y=canvas.height+20; b.x=Math.random()*canvas.width; }
+        ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+        ctx.strokeStyle='rgba(0,180,220,0.25)'; ctx.lineWidth=1; ctx.stroke();
+      });
+      themeBgAnimId = requestAnimationFrame(draw);
+    };
+    draw();
+  }
+}
+
+// =====================================================
+// ===== CHEAT CODE ====================================
+// =====================================================
+window.onepieceCheatBuffer = '';
+document.addEventListener('keydown', e => {
+  window.onepieceCheatBuffer += e.key.toLowerCase();
+  if (window.onepieceCheatBuffer.length > 9) window.onepieceCheatBuffer = window.onepieceCheatBuffer.slice(-9);
+  if (window.onepieceCheatBuffer.includes('one piece')) {
+    window.onepieceCheatBuffer = '';
+    state.points += 10000;
+    const mk = getMonthKey(new Date().getFullYear(), new Date().getMonth());
+    if (!state.pointsHistory[mk]) state.pointsHistory[mk] = { earned:0, spent:0 };
+    state.pointsHistory[mk].earned += 10000;
+    updatePoints();
+    saveState();
+    showToast('🏴‍☠️ One Piece trouvé ! +10 000 ✦');
+    launchConfetti();
+  }
+});
+// Also accessible via console: type onePiece() in the console
+window.onePiece = function() {
+  state.points += 10000;
+  const mk = getMonthKey(new Date().getFullYear(), new Date().getMonth());
+  if (!state.pointsHistory[mk]) state.pointsHistory[mk] = { earned:0, spent:0 };
+  state.pointsHistory[mk].earned += 10000;
+  updatePoints(); saveState();
+  showToast("🏴200d☠️ One Piece trouvé ! +10 000 ✦");
+  launchConfetti();
+  return "+10 000 pts ✦";
+};
 // =====================================================
 // ===== START =========================================
 // =====================================================

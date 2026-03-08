@@ -22,45 +22,250 @@ body.theme-neon{--bg:#050508;--bg2:#080810;--bg3:#0c0c18;--surface:#100f1e;--sur
 body.theme-slate{--bg:#0e1117;--bg2:#141922;--bg3:#1a212d;--surface:#202838;--surface2:#263040;--border:#303d55;--accent:#64748b;--accent2:#94a3b8;--accent3:#cbd5e1;--text:#f1f5f9;--text2:#94a3b8;--text3:#4a5568;--shadow-accent:0 4px 24px rgba(100,116,139,.25)}
 body.theme-cherry{--bg:#12060a;--bg2:#1c0c12;--bg3:#26101a;--surface:#321422;--surface2:#3e182a;--border:#5a2236;--accent:#dc143c;--accent2:#ff4060;--accent3:#ff8090;--text:#fff0f4;--text2:#c06070;--text3:#7a3344;--shadow-accent:0 4px 24px rgba(220,20,60,.35)}
 body.theme-cyber{--bg:#020810;--bg2:#060e1a;--bg3:#0a1422;--surface:#0e1c30;--surface2:#12243c;--border:#1a3055;--accent:#00ffcc;--accent2:#40ffd8;--accent3:#80ffe8;--text:#e0fff8;--text2:#40c8aa;--text3:#186650;--shadow-accent:0 4px 24px rgba(0,255,204,.3)}
-/* SERIES */
-body.theme-strangerthings{--bg:#060008;--bg2:#0c000f;--bg3:#130018;--surface:#1a0020;--surface2:#220028;--border:#440030;--accent:#cc0000;--accent2:#ff3333;--accent3:#ff8888;--text:#fff0f0;--text2:#cc6666;--text3:#883333;--shadow-accent:0 4px 24px rgba(204,0,0,.4)}
-body.theme-piratescaraibes{--bg:#0a0600;--bg2:#140d00;--bg3:#1e1400;--surface:#2a1c00;--surface2:#362400;--border:#503800;--accent:#c8860a;--accent2:#f5a820;--accent3:#ffd060;--text:#fff8e0;--text2:#c8a050;--text3:#806030;--shadow-accent:0 4px 24px rgba(200,134,10,.35)}
-body.theme-mercredi{--bg:#050505;--bg2:#080808;--bg3:#0e0e0e;--surface:#141414;--surface2:#1c1c1c;--border:#282828;--accent:#d0d0d0;--accent2:#e8e8e8;--accent3:#ffffff;--text:#f0f0f0;--text2:#909090;--text3:#505050;--shadow-accent:0 4px 24px rgba(200,200,200,.15)}
-body.theme-netflix{--bg:#080808;--bg2:#100e0e;--bg3:#181414;--surface:#1c1818;--surface2:#241e1e;--border:#3a2a2a;--accent:#e50914;--accent2:#ff2030;--accent3:#ff6068;--text:#ffffff;--text2:#b3b3b3;--text3:#666666;--shadow-accent:0 4px 24px rgba(229,9,20,.4)}
-body.theme-starwars{--bg:#050508;--bg2:#08080e;--bg3:#0e0e16;--surface:#12121e;--surface2:#181828;--border:#222240;--accent:#ffe81f;--accent2:#fff060;--accent3:#fff8a0;--text:#fffde0;--text2:#c8c060;--text3:#706830;--shadow-accent:0 4px 24px rgba(255,232,31,.3)}
-body.theme-avatar{--bg:#020e10;--bg2:#041418;--bg3:#061c22;--surface:#082430;--surface2:#0a2e3c;--border:#104858;--accent:#00b4d8;--accent2:#48d0f0;--accent3:#90e8ff;--text:#e0f8ff;--text2:#50b0cc;--text3:#206880;--shadow-accent:0 4px 24px rgba(0,180,216,.35)}
-/* MUSIC */
-body.theme-metallica{--bg:#080800;--bg2:#0e0e00;--bg3:#161600;--surface:#1e1e00;--surface2:#262600;--border:#404000;--accent:#c8a000;--accent2:#f0c400;--accent3:#ffe060;--text:#fffce0;--text2:#c0a840;--text3:#706020;--shadow-accent:0 4px 24px rgba(200,160,0,.35)}
-body.theme-slipknot{--bg:#080000;--bg2:#100000;--bg3:#180000;--surface:#220000;--surface2:#2c0000;--border:#500000;--accent:#cc2200;--accent2:#ff3300;--accent3:#ff7755;--text:#fff0ee;--text2:#cc5544;--text3:#882222;--shadow-accent:0 4px 24px rgba(204,34,0,.4)}
-body.theme-bfmv{--bg:#080006;--bg2:#100010;--bg3:#180016;--surface:#200020;--surface2:#2c002a;--border:#500048;--accent:#ff0040;--accent2:#ff3366;--accent3:#ff88aa;--text:#fff0f5;--text2:#cc4466;--text3:#882244;--shadow-accent:0 4px 24px rgba(255,0,64,.4)}
-body.theme-acdc{--bg:#080400;--bg2:#100800;--bg3:#180e00;--surface:#221400;--surface2:#2e1c00;--border:#503000;--accent:#ff6600;--accent2:#ff8833;--accent3:#ffbb77;--text:#fff4e0;--text2:#cc7733;--text3:#884422;--shadow-accent:0 4px 24px rgba(255,102,0,.4)}
-body.theme-avenged{--bg:#06000a;--bg2:#0c0014;--bg3:#14001e;--surface:#1c002a;--surface2:#240036;--border:#400060;--accent:#8800cc;--accent2:#bb33ff;--accent3:#dd88ff;--text:#f8e8ff;--text2:#aa55cc;--text3:#662288;--shadow-accent:0 4px 24px rgba(136,0,204,.4)}
-body.theme-nirvana{--bg:#04040c;--bg2:#080814;--bg3:#0e0e1e;--surface:#141428;--surface2:#1c1c34;--border:#2a2a50;--accent:#ffee00;--accent2:#fff466;--accent3:#fff8aa;--text:#fffff0;--text2:#aaaacc;--text3:#556688;--shadow-accent:0 4px 24px rgba(255,238,0,.3)}
 
-/* SPACE */
-body.theme-cosmos{--bg:#04010f;--bg2:#080220;--bg3:#0e052e;--surface:#140840;--surface2:#1c0e52;--border:#2a1880;--accent:#6c63ff;--accent2:#a89cff;--accent3:#cec8ff;--text:#f0eeff;--text2:#9890cc;--text3:#504888;--shadow-accent:0 4px 24px rgba(108,99,255,.35)}
-body.theme-nebula{--bg:#0a0214;--bg2:#120420;--bg3:#1a062e;--surface:#220840;--surface2:#2c0c52;--border:#481880;--accent:#ff6ec7;--accent2:#ffaae6;--accent3:#ffd4f4;--text:#fff0fc;--text2:#cc88bb;--text3:#885577;--shadow-accent:0 4px 24px rgba(255,110,199,.35)}
-body.theme-blackhole{--bg:#000005;--bg2:#04020e;--bg3:#080418;--surface:#0e0828;--surface2:#140c38;--border:#201858;--accent:#444cf7;--accent2:#8890ff;--accent3:#bec2ff;--text:#eeeeff;--text2:#8888cc;--text3:#444488;--shadow-accent:0 4px 24px rgba(68,76,247,.4)}
-body.theme-mars{--bg:#100402;--bg2:#180804;--bg3:#220e06;--surface:#2e1408;--surface2:#3a1a0a;--border:#5a2c14;--accent:#e25822;--accent2:#ff7043;--accent3:#ffaa88;--text:#fff4ee;--text2:#cc6644;--text3:#884422;--shadow-accent:0 4px 24px rgba(226,88,34,.4)}
-body.theme-galaxy{--bg:#020a14;--bg2:#041020;--bg3:#08182e;--surface:#0c2040;--surface2:#102850;--border:#184070;--accent:#00c6ff;--accent2:#80e8ff;--accent3:#c0f4ff;--text:#e8f8ff;--text2:#50b8dd;--text3:#206880;--shadow-accent:0 4px 24px rgba(0,198,255,.35)}
-/* GAMING */
-body.theme-minecraft{--bg:#1a1a0a;--bg2:#222210;--bg3:#2a2a14;--surface:#363618;--surface2:#44441e;--border:#5c5c28;--accent:#5d8a3c;--accent2:#8bc34a;--accent3:#b8e07a;--text:#f4ffe0;--text2:#88aa55;--text3:#445522;--shadow-accent:0 4px 24px rgba(93,138,60,.35)}
-body.theme-zelda{--bg:#060400;--bg2:#0e0a00;--bg3:#181000;--surface:#241800;--surface2:#302200;--border:#503c00;--accent:#f9a825;--accent2:#ffd54f;--accent3:#ffecb3;--text:#fffde8;--text2:#c8a040;--text3:#806020;--shadow-accent:0 4px 24px rgba(249,168,37,.35)}
-body.theme-gta{--bg:#050302;--bg2:#0c0804;--bg3:#140e06;--surface:#1e1608;--surface2:#281e0c;--border:#463414;--accent:#ff8f00;--accent2:#ffb300;--accent3:#ffd54f;--text:#fff8e0;--text2:#cc8822;--text3:#885511;--shadow-accent:0 4px 24px rgba(255,143,0,.4)}
-body.theme-cyberpunk{--bg:#030014;--bg2:#060020;--bg3:#0c0030;--surface:#120044;--surface2:#180058;--border:#2c0088;--accent:#fcee09;--accent2:#ff2a6d;--accent3:#ff80aa;--text:#fff8e0;--text2:#cc9900;--text3:#886600;--shadow-accent:0 4px 24px rgba(252,238,9,.3)}
-body.theme-pokemon{--bg:#0a0800;--bg2:#120e00;--bg3:#1a1600;--surface:#242000;--surface2:#302a00;--border:#504400;--accent:#ffcb05;--accent2:#ff0000;--accent3:#ff6666;--text:#fffff0;--text2:#ccaa00;--text3:#886600;--shadow-accent:0 4px 24px rgba(255,203,5,.35)}
-/* NATURE */
+/* ========== IMMERSIVE SERIES THEMES ========== */
+
+/* STRANGER THINGS — police Creepster, lueur rouge, effet scanlines */
+body.theme-strangerthings{
+  --bg:#060008;--bg2:#0c000f;--bg3:#130018;--surface:#1a0020;--surface2:#220028;
+  --border:#440030;--accent:#cc0000;--accent2:#ff3333;--accent3:#ff8888;
+  --text:#fff0f0;--text2:#cc6666;--text3:#883333;
+  --shadow-accent:0 4px 24px rgba(204,0,0,.4);
+  --font-display:'Creepster',cursive;
+  --font-body:'Special Elite',cursive;
+}
+body.theme-strangerthings::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0px,rgba(0,0,0,.08) 1px,transparent 1px,transparent 3px);
+}
+body.theme-strangerthings .brand-name,
+body.theme-strangerthings .cat-title,
+body.theme-strangerthings .panel-title{
+  text-shadow:0 0 10px #cc0000,0 0 30px #880000;
+  letter-spacing:2px;
+}
+body.theme-strangerthings .navbar{border-bottom-color:#440030;box-shadow:0 2px 20px rgba(204,0,0,.3)}
+
+/* PIRATES — police Cinzel, parchemin */
+body.theme-piratescaraibes{
+  --bg:#0a0600;--bg2:#140d00;--bg3:#1e1400;--surface:#2a1c00;--surface2:#362400;
+  --border:#503800;--accent:#c8860a;--accent2:#f5a820;--accent3:#ffd060;
+  --text:#fff8e0;--text2:#c8a050;--text3:#806030;
+  --shadow-accent:0 4px 24px rgba(200,134,10,.35);
+  --font-display:'Cinzel',serif;
+  --font-body:'Cinzel',serif;
+}
+body.theme-piratescaraibes .category-card{
+  border-image:none;
+  background:linear-gradient(135deg,rgba(42,28,0,.95),rgba(22,14,0,.95));
+}
+body.theme-piratescaraibes .brand-name{letter-spacing:3px;text-shadow:0 2px 8px rgba(200,134,10,.5)}
+
+/* MERCREDI — police Creepster noir & blanc, rayures */
+body.theme-mercredi{
+  --bg:#050505;--bg2:#080808;--bg3:#0e0e0e;--surface:#141414;--surface2:#1c1c1c;
+  --border:#282828;--accent:#d0d0d0;--accent2:#e8e8e8;--accent3:#ffffff;
+  --text:#f0f0f0;--text2:#909090;--text3:#505050;
+  --shadow-accent:0 4px 24px rgba(200,200,200,.15);
+  --font-display:'Creepster',cursive;
+  --font-body:'Special Elite',cursive;
+}
+body.theme-mercredi .category-card{border-left:3px solid #333}
+body.theme-mercredi .brand-name{letter-spacing:4px;font-variant:small-caps}
+
+/* NETFLIX — Bebas Neue, rouge vif */
+body.theme-netflix{
+  --bg:#080808;--bg2:#100e0e;--bg3:#181414;--surface:#1c1818;--surface2:#241e1e;
+  --border:#3a2a2a;--accent:#e50914;--accent2:#ff2030;--accent3:#ff6068;
+  --text:#ffffff;--text2:#b3b3b3;--text3:#666666;
+  --shadow-accent:0 4px 24px rgba(229,9,20,.4);
+  --font-display:'Bebas Neue',cursive;
+  --font-body:'DM Sans',sans-serif;
+}
+body.theme-netflix .brand-name{letter-spacing:4px;font-size:22px}
+body.theme-netflix .cat-title,.panel-title{letter-spacing:2px}
+
+/* STAR WARS — Orbitron, étoiles canvas, jaune */
+body.theme-starwars{
+  --bg:#050508;--bg2:#08080e;--bg3:#0e0e16;--surface:#12121e;--surface2:#181828;
+  --border:#222240;--accent:#ffe81f;--accent2:#fff060;--accent3:#fff8a0;
+  --text:#fffde0;--text2:#c8c060;--text3:#706830;
+  --shadow-accent:0 4px 24px rgba(255,232,31,.3);
+  --font-display:'Orbitron',monospace;
+  --font-body:'Orbitron',monospace;
+}
+body.theme-starwars .brand-name{font-size:14px;letter-spacing:3px;text-shadow:0 0 15px #ffe81f}
+body.theme-starwars .cat-title{font-size:12px;letter-spacing:2px}
+body.theme-starwars .navbar{border-color:#ffe81f44}
+
+/* AVATAR — Cinzel, bleu bioluminescent */
+body.theme-avatar{
+  --bg:#020e10;--bg2:#041418;--bg3:#061c22;--surface:#082430;--surface2:#0a2e3c;
+  --border:#104858;--accent:#00b4d8;--accent2:#48d0f0;--accent3:#90e8ff;
+  --text:#e0f8ff;--text2:#50b0cc;--text3:#206880;
+  --shadow-accent:0 4px 24px rgba(0,180,216,.35);
+  --font-display:'Cinzel',serif;
+}
+body.theme-avatar .brand-name,.theme-avatar .cat-title{text-shadow:0 0 12px rgba(0,180,216,.6)}
+
+/* ========== IMMERSIVE MUSIC THEMES ========== */
+
+/* METALLICA — Bebas Neue, métal brossé */
+body.theme-metallica{
+  --bg:#080800;--bg2:#0e0e00;--bg3:#161600;--surface:#1e1e00;--surface2:#262600;
+  --border:#404000;--accent:#c8a000;--accent2:#f0c400;--accent3:#ffe060;
+  --text:#fffce0;--text2:#c0a840;--text3:#706020;
+  --shadow-accent:0 4px 24px rgba(200,160,0,.35);
+  --font-display:'Bebas Neue',cursive;
+  --font-body:'DM Sans',sans-serif;
+}
+body.theme-metallica .brand-name{letter-spacing:5px;font-size:20px}
+body.theme-metallica .category-card{border-top:2px solid #404000}
+
+/* SLIPKNOT — Creepster, rouge sang */
+body.theme-slipknot{
+  --bg:#080000;--bg2:#100000;--bg3:#180000;--surface:#220000;--surface2:#2c0000;
+  --border:#500000;--accent:#cc2200;--accent2:#ff3300;--accent3:#ff7755;
+  --text:#fff0ee;--text2:#cc5544;--text3:#882222;
+  --shadow-accent:0 4px 24px rgba(204,34,0,.4);
+  --font-display:'Creepster',cursive;
+  --font-body:'Special Elite',cursive;
+}
+body.theme-slipknot .brand-name{letter-spacing:3px;text-shadow:0 0 15px #cc2200}
+
+/* BFMV */
+body.theme-bfmv{--bg:#080006;--bg2:#100010;--bg3:#180016;--surface:#200020;--surface2:#2c002a;--border:#500048;--accent:#ff0040;--accent2:#ff3366;--accent3:#ff88aa;--text:#fff0f5;--text2:#cc4466;--text3:#882244;--shadow-accent:0 4px 24px rgba(255,0,64,.4);--font-display:'Bebas Neue',cursive}
+
+/* AC/DC — Bebas Neue, éclair */
+body.theme-acdc{
+  --bg:#080400;--bg2:#100800;--bg3:#180e00;--surface:#221400;--surface2:#2e1c00;
+  --border:#503000;--accent:#ff6600;--accent2:#ff8833;--accent3:#ffbb77;
+  --text:#fff4e0;--text2:#cc7733;--text3:#884422;
+  --shadow-accent:0 4px 24px rgba(255,102,0,.4);
+  --font-display:'Bebas Neue',cursive;
+}
+body.theme-acdc .brand-name{letter-spacing:6px;font-size:20px}
+
+/* AVENGED SEVENFOLD */
+body.theme-avenged{--bg:#06000a;--bg2:#0c0014;--bg3:#14001e;--surface:#1c002a;--surface2:#240036;--border:#400060;--accent:#8800cc;--accent2:#bb33ff;--accent3:#dd88ff;--text:#f8e8ff;--text2:#aa55cc;--text3:#662288;--shadow-accent:0 4px 24px rgba(136,0,204,.4);--font-display:'Creepster',cursive}
+
+/* NIRVANA — Permanent Marker, grunge */
+body.theme-nirvana{
+  --bg:#04040c;--bg2:#080814;--bg3:#0e0e1e;--surface:#141428;--surface2:#1c1c34;
+  --border:#2a2a50;--accent:#ffee00;--accent2:#fff466;--accent3:#fff8aa;
+  --text:#fffff0;--text2:#aaaacc;--text3:#556688;
+  --shadow-accent:0 4px 24px rgba(255,238,0,.3);
+  --font-display:'Permanent Marker',cursive;
+  --font-body:'Special Elite',cursive;
+}
+body.theme-nirvana .brand-name{transform:rotate(-1deg);display:inline-block}
+
+/* ========== IMMERSIVE SPACE THEMES ========== */
+
+/* COSMOS — Orbitron, étoiles */
+body.theme-cosmos{
+  --bg:#04010f;--bg2:#080220;--bg3:#0e052e;--surface:#140840;--surface2:#1c0e52;
+  --border:#2a1880;--accent:#6c63ff;--accent2:#a89cff;--accent3:#cec8ff;
+  --text:#f0eeff;--text2:#9890cc;--text3:#504888;
+  --shadow-accent:0 4px 24px rgba(108,99,255,.35);
+  --font-display:'Orbitron',monospace;
+}
+/* NEBULA */
+body.theme-nebula{--bg:#0a0214;--bg2:#120420;--bg3:#1a062e;--surface:#220840;--surface2:#2c0c52;--border:#481880;--accent:#ff6ec7;--accent2:#ffaae6;--accent3:#ffd4f4;--text:#fff0fc;--text2:#cc88bb;--text3:#885577;--shadow-accent:0 4px 24px rgba(255,110,199,.35);--font-display:'Orbitron',monospace}
+/* BLACK HOLE */
+body.theme-blackhole{--bg:#000005;--bg2:#04020e;--bg3:#080418;--surface:#0e0828;--surface2:#140c38;--border:#201858;--accent:#444cf7;--accent2:#8890ff;--accent3:#bec2ff;--text:#eeeeff;--text2:#8888cc;--text3:#444488;--shadow-accent:0 4px 24px rgba(68,76,247,.4);--font-display:'Orbitron',monospace}
+/* MARS */
+body.theme-mars{--bg:#100402;--bg2:#180804;--bg3:#220e06;--surface:#2e1408;--surface2:#3a1a0a;--border:#5a2c14;--accent:#e25822;--accent2:#ff7043;--accent3:#ffaa88;--text:#fff4ee;--text2:#cc6644;--text3:#884422;--shadow-accent:0 4px 24px rgba(226,88,34,.4);--font-display:'Orbitron',monospace}
+/* GALAXY */
+body.theme-galaxy{--bg:#020a14;--bg2:#041020;--bg3:#08182e;--surface:#0c2040;--surface2:#102850;--border:#184070;--accent:#00c6ff;--accent2:#80e8ff;--accent3:#c0f4ff;--text:#e8f8ff;--text2:#50b8dd;--text3:#206880;--shadow-accent:0 4px 24px rgba(0,198,255,.35);--font-display:'Orbitron',monospace}
+
+/* ========== IMMERSIVE GAMING THEMES ========== */
+
+/* MINECRAFT — Press Start 2P, pixels */
+body.theme-minecraft{
+  --bg:#1a1a0a;--bg2:#222210;--bg3:#2a2a14;--surface:#363618;--surface2:#44441e;
+  --border:#5c5c28;--accent:#5d8a3c;--accent2:#8bc34a;--accent3:#b8e07a;
+  --text:#f4ffe0;--text2:#88aa55;--text3:#445522;
+  --shadow-accent:0 4px 24px rgba(93,138,60,.35);
+  --font-display:'Press Start 2P',monospace;
+  --font-body:'VT323',monospace;
+  --radius:4px;--radius-sm:2px;
+}
+body.theme-minecraft .brand-name{font-size:11px;letter-spacing:1px;image-rendering:pixelated}
+body.theme-minecraft .cat-title{font-size:10px;letter-spacing:0}
+body.theme-minecraft .category-card{border:3px solid #5c5c28;border-radius:4px;image-rendering:pixelated}
+body.theme-minecraft .navbar{border-bottom:3px solid #5c5c28}
+body.theme-minecraft .task-item{border-radius:2px}
+body.theme-minecraft .nav-btn{border-radius:2px}
+
+/* ZELDA — Cinzel, or */
+body.theme-zelda{
+  --bg:#060400;--bg2:#0e0a00;--bg3:#181000;--surface:#241800;--surface2:#302200;
+  --border:#503c00;--accent:#f9a825;--accent2:#ffd54f;--accent3:#ffecb3;
+  --text:#fffde8;--text2:#c8a040;--text3:#806020;
+  --shadow-accent:0 4px 24px rgba(249,168,37,.35);
+  --font-display:'Cinzel',serif;
+  --font-body:'Cinzel',serif;
+}
+body.theme-zelda .brand-name{letter-spacing:4px;text-shadow:0 0 10px rgba(249,168,37,.5)}
+body.theme-zelda .category-card{border:1px solid #503c00;background:linear-gradient(135deg,rgba(36,24,0,.95),rgba(18,12,0,.98))}
+
+/* GTA — Bebas Neue, orange chaud */
+body.theme-gta{
+  --bg:#050302;--bg2:#0c0804;--bg3:#140e06;--surface:#1e1608;--surface2:#281e0c;
+  --border:#463414;--accent:#ff8f00;--accent2:#ffb300;--accent3:#ffd54f;
+  --text:#fff8e0;--text2:#cc8822;--text3:#885511;
+  --shadow-accent:0 4px 24px rgba(255,143,0,.4);
+  --font-display:'Bebas Neue',cursive;
+  --font-body:'DM Sans',sans-serif;
+}
+body.theme-gta .brand-name{letter-spacing:5px;font-size:21px}
+
+/* CYBERPUNK — Orbitron, scanlines, néon */
+body.theme-cyberpunk{
+  --bg:#030014;--bg2:#060020;--bg3:#0c0030;--surface:#120044;--surface2:#180058;
+  --border:#2c0088;--accent:#fcee09;--accent2:#ff2a6d;--accent3:#ff80aa;
+  --text:#fff8e0;--text2:#cc9900;--text3:#886600;
+  --shadow-accent:0 4px 24px rgba(252,238,9,.3);
+  --font-display:'Orbitron',monospace;
+  --font-body:'Orbitron',monospace;
+}
+body.theme-cyberpunk::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0px,rgba(0,0,0,.05) 1px,transparent 1px,transparent 2px);
+}
+body.theme-cyberpunk .brand-name{font-size:11px;letter-spacing:2px;text-shadow:0 0 10px #fcee09,0 0 20px #ff2a6d}
+body.theme-cyberpunk .cat-title{font-size:11px;text-shadow:0 0 8px #fcee09}
+
+/* POKÉMON — Righteous, rouge & jaune */
+body.theme-pokemon{
+  --bg:#0a0800;--bg2:#120e00;--bg3:#1a1600;--surface:#242000;--surface2:#302a00;
+  --border:#504400;--accent:#ffcb05;--accent2:#ff0000;--accent3:#ff6666;
+  --text:#fffff0;--text2:#ccaa00;--text3:#886600;
+  --shadow-accent:0 4px 24px rgba(255,203,5,.35);
+  --font-display:'Righteous',cursive;
+  --font-body:'DM Sans',sans-serif;
+}
+body.theme-pokemon .brand-name{letter-spacing:2px}
+body.theme-pokemon .category-card{border-top:2px solid #504400}
+
+/* ========== NATURE THEMES ========== */
 body.theme-forest{--bg:#050e08;--bg2:#081410;--bg3:#0e1e16;--surface:#142820;--surface2:#1a342a;--border:#255040;--accent:#2d6a4f;--accent2:#52b788;--accent3:#95d5b2;--text:#e8fff2;--text2:#60aa80;--text3:#306648;--shadow-accent:0 4px 24px rgba(45,106,79,.35)}
 body.theme-sakura{--bg:#0f050a;--bg2:#180a12;--bg3:#22101a;--surface:#2e1624;--surface2:#3a1c2e;--border:#5a2a48;--accent:#ff85a1;--accent2:#ffb3c6;--accent3:#ffd6e0;--text:#fff0f5;--text2:#cc7799;--text3:#884455;--shadow-accent:0 4px 24px rgba(255,133,161,.35)}
 body.theme-ocean2{--bg:#010d14;--bg2:#031420;--bg3:#051c2e;--surface:#082440;--surface2:#0c2e50;--border:#104870;--accent:#0077b6;--accent2:#00b4d8;--accent3:#90e0ef;--text:#e0f8ff;--text2:#4090b0;--text3:#205570;--shadow-accent:0 4px 24px rgba(0,119,182,.4)}
 body.theme-desert{--bg:#0e0b04;--bg2:#161208;--bg3:#1e180c;--surface:#2a2210;--surface2:#362c14;--border:#564820;--accent:#e9c46a;--accent2:#f4a261;--accent3:#e76f51;--text:#fff8e8;--text2:#c8a055;--text3:#886630;--shadow-accent:0 4px 24px rgba(233,196,106,.35)}
 body.theme-arctic{--bg:#030d10;--bg2:#061418;--bg3:#0a1c22;--surface:#0e2430;--surface2:#122c3c;--border:#1a4458;--accent:#a8dadc;--accent2:#caf0f8;--accent3:#e8faff;--text:#f0feff;--text2:#70b8c0;--text3:#307888;--shadow-accent:0 4px 24px rgba(168,218,220,.3)}
-/* HALLOWEEN */
-body.theme-halloween{--bg:#080200;--bg2:#100400;--bg3:#180800;--surface:#221000;--surface2:#2e1600;--border:#502800;--accent:#ff6b00;--accent2:#ff9500;--accent3:#ffcc66;--text:#fff8e0;--text2:#cc6600;--text3:#884400;--shadow-accent:0 4px 24px rgba(255,107,0,.4)}
-body.theme-vampire{--bg:#060000;--bg2:#0e0000;--bg3:#160000;--surface:#200000;--surface2:#2c0000;--border:#500000;--accent:#8b0000;--accent2:#cc0000;--accent3:#ff4444;--text:#fff0f0;--text2:#aa4444;--text3:#662222;--shadow-accent:0 4px 24px rgba(139,0,0,.5)}
-body.theme-witch{--bg:#050008;--bg2:#0a0014;--bg3:#10001e;--surface:#180028;--surface2:#200034;--border:#3c0060;--accent:#6a0dad;--accent2:#9b30ff;--accent3:#cc88ff;--text:#f8e8ff;--text2:#9955cc;--text3:#552288;--shadow-accent:0 4px 24px rgba(106,13,173,.4)}
-body.theme-zombie{--bg:#020804;--bg2:#060e08;--bg3:#0c160e;--surface:#121e14;--surface2:#18281a;--border:#2a4030;--accent:#4a7c59;--accent2:#6dbf82;--accent3:#a8e0b2;--text:#e8ffee;--text2:#559966;--text3:#2a5534;--shadow-accent:0 4px 24px rgba(74,124,89,.35)}
+
+/* ========== HALLOWEEN THEMES ========== */
+body.theme-halloween{--bg:#080200;--bg2:#100400;--bg3:#180800;--surface:#221000;--surface2:#2e1600;--border:#502800;--accent:#ff6b00;--accent2:#ff9500;--accent3:#ffcc66;--text:#fff8e0;--text2:#cc6600;--text3:#884400;--shadow-accent:0 4px 24px rgba(255,107,0,.4);--font-display:'Creepster',cursive}
+body.theme-vampire{--bg:#060000;--bg2:#0e0000;--bg3:#160000;--surface:#200000;--surface2:#2c0000;--border:#500000;--accent:#8b0000;--accent2:#cc0000;--accent3:#ff4444;--text:#fff0f0;--text2:#aa4444;--text3:#662222;--shadow-accent:0 4px 24px rgba(139,0,0,.5);--font-display:'Creepster',cursive}
+body.theme-witch{--bg:#050008;--bg2:#0a0014;--bg3:#10001e;--surface:#180028;--surface2:#200034;--border:#3c0060;--accent:#6a0dad;--accent2:#9b30ff;--accent3:#cc88ff;--text:#f8e8ff;--text2:#9955cc;--text3:#552288;--shadow-accent:0 4px 24px rgba(106,13,173,.4);--font-display:'Creepster',cursive}
+body.theme-zombie{--bg:#020804;--bg2:#060e08;--bg3:#0c160e;--surface:#121e14;--surface2:#18281a;--border:#2a4030;--accent:#4a7c59;--accent2:#6dbf82;--accent3:#a8e0b2;--text:#e8ffee;--text2:#559966;--text3:#2a5534;--shadow-accent:0 4px 24px rgba(74,124,89,.35);--font-display:'Creepster',cursive}
 body.theme-ghost{--bg:#060810;--bg2:#0c1020;--bg3:#121830;--surface:#181e40;--surface2:#1e2450;--border:#2a3470;--accent:#b0c4de;--accent2:#dce8f5;--accent3:#f0f6ff;--text:#f8faff;--text2:#8899bb;--text3:#445577;--shadow-accent:0 4px 24px rgba(176,196,222,.25)}
+
+/* ===== THEME BACKGROUND CANVAS ===== */
+#theme-bg-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6}
+.main-content,.navbar,.panel,.day-modal,.badge-modal,.recap-modal,.streak-goal-modal,.goal-reached-modal{position:relative;z-index:1}
 
 /* ===== RESET ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
