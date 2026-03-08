@@ -37,12 +37,12 @@
 <main class="main-content" id="main-todo">
 
   <!-- BOOST BANNER -->
-  <div class="boost-banner" id="boost-banner" style="display:none"></div>
+  <div class="boost-banner" id="boost-banner"></div>
 
   <!-- STREAK + BEST STREAK BAR -->
   <div class="streak-bar">
     <div class="streak-info">
-      <span>🔥</span><span id="streak-count">0</span><span class="streak-text">jours de suite</span>
+      <span id="streak-flame-icon">🔥</span><span id="streak-count">0</span><span class="streak-text">jours de suite</span>
     </div>
     <div class="streak-info">
       <span>🏆</span><span id="best-streak-count">0</span><span class="streak-text">record</span>
@@ -50,6 +50,7 @@
     <div class="streak-info">
       <span>✅</span><span id="tasks-today">0</span><span class="streak-text">aujourd'hui</span>
     </div>
+    <button class="edit-mode-btn" id="btn-edit" onclick="toggleEditMode()">✏️ Éditer</button>
   </div>
 
   <!-- STREAK GOAL BAR -->
@@ -205,6 +206,10 @@
       <div class="task-item" data-task="reseaux-2" data-points="1" data-cat="reseaux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire le BeReal</span></label><span class="task-pts">+1 ✦</span></div>
       <div class="task-item" data-task="reseaux-3" data-points="1" data-cat="reseaux"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Garder la série Twitch</span></label><span class="task-pts">+1 ✦</span></div>
     </div>
+  </div>
+  <!-- ADD CATEGORY (edit mode) -->
+  <div id="add-cat-btn-container" style="display:none">
+    <button class="add-category-btn" onclick="addNewCategory()">＋ Nouvelle catégorie</button>
   </div>
 
 </main>

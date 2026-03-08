@@ -23,8 +23,12 @@ let state = {
   bonusTask: null,
   notifications: {},
   bestStreak: 0,
-  streakGoal: null,      // { days, reward, setAt } — current streak objective
-  boost: null,           // { type:'x2'|'+50%', startTime, endTime, date }
+  streakGoal: null,
+  boost: null,
+  customTasks: {},       // { taskId: { name, pts, cat, days? } } — user-added tasks
+  customCategories: {},  // { catId: { label, icon } } — user-added categories
+  deletedTasks: [],      // [taskId] — built-in tasks the user deleted
+  deletedCategories: [], // [catId] — built-in categories the user deleted
 };
 
 // =====================================================
@@ -167,6 +171,44 @@ const categories = {
 };
 
 const defaultCatIcons = { etude:'📚', musique:'🎸', sante:'🏃', lycee:'🏫', jeux:'🎮', culture:'🎬', reseaux:'📱' };
+
+// Returns merged taskMeta + customTasks minus deletedTasks
+function getEffectiveTasks() {
+  const deleted = state.deletedTasks || [];
+  const result = {};
+  Object.entries(taskMeta).forEach(([id, t]) => {
+    if (!deleted.includes(id)) result[id] = { ...t };
+  });
+  Object.entries(state.customTasks || {}).forEach(([id, t]) => {
+    result[id] = { ...t };
+  });
+  return result;
+}
+
+// Returns merged categories + customCategories minus deletedCategories
+function getEffectiveCategories() {
+  const deleted = state.deletedCategories || [];
+  const result = {};
+  Object.entries(categories).forEach(([id, c]) => {
+    if (!deleted.includes(id)) result[id] = { ...c };
+  });
+  Object.entries(state.customCategories || {}).forEach(([id, c]) => {
+    result[id] = { label: c.label, total: 0 };
+  });
+  // Recompute totals dynamically based on effective tasks
+  const tasks = getEffectiveTasks();
+  const dow = new Date().getDay();
+  Object.keys(result).forEach(catId => {
+    const catLabel = result[catId].label;
+    const tasksInCat = Object.values(tasks).filter(t => {
+      if (t.cat !== catLabel) return false;
+      if (t.days && !t.days.includes(dow)) return false;
+      return true;
+    });
+    result[catId].total = tasksInCat.length;
+  });
+  return result;
+}
 const EMOJI_OPTIONS = ['📚','🎸','⚡','🎮','🎬','📱','🏋️','🧠','🎯','🏆','🌟','🔥','💡','🎵','🎨','🏃','🧩','📖','✏️','🎲','🦁','🐉','🌈','⚔️','🛡️','🚀','💻','🎤','🎧','📸','🎃','👾','🌙','☀️','💫','🦋'];
 const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const monthNamesShort = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
@@ -222,8 +264,8 @@ function init() {
 
   applyCategoryIcons();
   initBonusTask();
+  rebuildTaskLists();
   restoreChecks();
-  applyRecurringVisibility();
   updatePoints();
   updateAllCounts();
   updateStreak();
@@ -435,7 +477,9 @@ function updatePoints() {
 function updateAllCounts() {
   const today = getTodayKey();
   const todayTasks = state.checkedTasks[today] || {};
-  Object.keys(categories).forEach(cat => {
+  // Get all unique cat IDs from DOM
+  const catIds = new Set([...document.querySelectorAll('.task-item[data-cat]')].map(i => i.dataset.cat));
+  catIds.forEach(cat => {
     const items = [...document.querySelectorAll(`.task-item[data-cat="${cat}"]`)].filter(i => !i.classList.contains('weekend-hidden'));
     const total = items.length;
     const done = items.filter(i => todayTasks[i.dataset.task]).length;
@@ -475,14 +519,33 @@ function getStreakCount() {
   return streak;
 }
 
+function isSuperFlameDay() {
+  const today = getTodayKey();
+  const todayTasks = state.checkedTasks[today] || {};
+  const dow = new Date().getDay();
+  const allTasks = getEffectiveTasks();
+  const available = Object.entries(allTasks).filter(([id, t]) => {
+    if (t.days && !t.days.includes(dow)) return false;
+    return true;
+  });
+  if (available.length === 0) return false;
+  return available.every(([id]) => todayTasks[id]);
+}
+
 function updateStreak() {
   const s = getStreakCount();
-  document.getElementById('streak-count').textContent = s;
-  if (s > (state.bestStreak || 0)) {
-    state.bestStreak = s;
-  }
+  const superFlame = isSuperFlameDay();
+  const flameEl = document.getElementById('streak-flame-icon');
+  const countEl = document.getElementById('streak-count');
+  if (flameEl) flameEl.textContent = superFlame ? '🌟' : '🔥';
+  if (countEl) countEl.textContent = s;
+  if (superFlame && flameEl) flameEl.classList.add('super-flame');
+  else if (flameEl) flameEl.classList.remove('super-flame');
+  if (s > (state.bestStreak || 0)) state.bestStreak = s;
   const bs = document.getElementById('best-streak-count');
   if (bs) bs.textContent = state.bestStreak || 0;
+  renderStreakGoalBar();
+  checkStreakGoalReached();
 }
 
 // =====================================================
@@ -1913,26 +1976,19 @@ function renderStreakGoalBar() {
 // =====================================================
 function initDailyBoost() {
   const today = getTodayKey();
-  // Reset boost if it's a new day
   if (!state.boost || state.boost.date !== today) {
-    // Random start between 6:00 and 22:00 (so 2h window ends by midnight)
     const startHour = 6 + Math.floor(Math.random() * 16);
     const startMin  = Math.floor(Math.random() * 60);
     const type = Math.random() < 0.5 ? 'x2' : '+50%';
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMin, 0);
     const end   = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-    state.boost = {
-      type, date: today,
-      startTime: start.getTime(),
-      endTime:   end.getTime(),
-      announced: false,
-    };
+    state.boost = { type, date: today, startTime: start.getTime(), endTime: end.getTime() };
     saveState();
   }
   renderBoostBanner();
-  // Check every minute
-  setInterval(() => { renderBoostBanner(); }, 60000);
+  // Refresh every 10 seconds for accuracy
+  setInterval(renderBoostBanner, 10000);
 }
 
 function isBoostActive() {
@@ -1956,41 +2012,318 @@ function applyBoost(basePts) {
 
 function renderBoostBanner() {
   const banner = document.getElementById('boost-banner');
-  if (!banner || !state.boost) { if (banner) banner.className = 'boost-banner'; return; }
-  const now = Date.now();
-  const start = state.boost.startTime;
-  const end   = state.boost.endTime;
-  const today = getTodayKey();
-  if (state.boost.date !== today) { banner.className = 'boost-banner'; return; }
+  if (!banner) return;
 
-  if (now < start) {
-    const diffMs = start - now;
+  if (!state.boost) { banner.className = 'boost-banner'; banner.innerHTML = ''; return; }
+
+  const now = Date.now();
+  const { startTime, endTime, type, date } = state.boost;
+  const today = getTodayKey();
+
+  // Wrong day
+  if (date !== today) { banner.className = 'boost-banner'; banner.innerHTML = ''; return; }
+
+  const startDate = new Date(startTime);
+  const hh = String(startDate.getHours()).padStart(2,'0');
+  const mm = String(startDate.getMinutes()).padStart(2,'0');
+  const endDate = new Date(endTime);
+  const hh2 = String(endDate.getHours()).padStart(2,'0');
+  const mm2 = String(endDate.getMinutes()).padStart(2,'0');
+
+  if (now < startTime) {
+    // Upcoming
+    const diffMs = startTime - now;
     const diffH  = Math.floor(diffMs / 3600000);
     const diffM  = Math.floor((diffMs % 3600000) / 60000);
-    const startTime = new Date(start);
-    const hh = String(startTime.getHours()).padStart(2,'0');
-    const mm = String(startTime.getMinutes()).padStart(2,'0');
+    const timeStr = diffH > 0 ? `${diffH}h ${diffM}min` : `${diffM} min`;
     banner.className = 'boost-banner upcoming';
-    banner.innerHTML = `⚡ Boost <strong>${state.boost.type}</strong> dans ${diffH > 0 ? diffH+'h ' : ''}${diffM}min — démarre à <strong>${hh}:${mm}</strong>`;
-  } else if (now >= start && now <= end) {
-    const diffMs = end - now;
+    banner.innerHTML = `⚡ Boost <strong>${type}</strong> aujourd'hui à <strong>${hh}:${mm}</strong> — dans ${timeStr}`;
+  } else if (now <= endTime) {
+    // Active
+    const diffMs = endTime - now;
     const diffM  = Math.floor(diffMs / 60000);
     const diffS  = Math.floor((diffMs % 60000) / 1000);
     banner.className = 'boost-banner active';
-    banner.innerHTML = `🚀 BOOST <strong>${state.boost.type}</strong> ACTIF — encore ${diffM}m ${diffS}s !`;
-    setTimeout(() => renderBoostBanner(), 1000);
+    banner.innerHTML = `🚀 BOOST <strong>${type}</strong> ACTIF jusqu'à ${hh2}:${mm2} — encore <strong>${diffM}m ${diffS}s</strong> !`;
+    setTimeout(renderBoostBanner, 1000);
   } else {
-    banner.className = 'boost-banner';
-    banner.innerHTML = '';
+    // Ended
+    banner.className = 'boost-banner ended';
+    banner.innerHTML = `✅ Boost ${type} terminé aujourd'hui — reviens demain !`;
   }
 }
 
 // =====================================================
-// ===== MUSIC (removed) ===============================
+// ===== EDIT MODE =====================================
 // =====================================================
-function toggleMusic() {}
-function updateMusicBtn() {}
-function loadMusicForTheme() {}
+let editMode = false;
+
+function toggleEditMode() {
+  editMode = !editMode;
+  const btn = document.getElementById('btn-edit');
+  if (btn) {
+    btn.textContent = editMode ? '✅ Terminer' : '✏️ Éditer';
+    btn.classList.toggle('active', editMode);
+  }
+  const addCatBtn = document.getElementById('add-cat-btn-container');
+  if (addCatBtn) addCatBtn.style.display = editMode ? 'block' : 'none';
+  rebuildTaskLists();
+}
+
+function rebuildTaskLists() {
+  const today = getTodayKey();
+  const todayTasks = state.checkedTasks[today] || {};
+  const dow = new Date().getDay();
+  const effTasks = getEffectiveTasks();
+  const effCats = getEffectiveCategories();
+
+  // Handle lycée visibility
+  const lyceeCat = document.getElementById('cat-lycee');
+  if (lyceeCat) lyceeCat.style.display = (dow === 0 || dow === 6) && !editMode ? 'none' : '';
+
+  // Rebuild each category's task list
+  Object.entries(effCats).forEach(([catId, catInfo]) => {
+    const listEl = document.getElementById(`list-${catId}`);
+    const catCard = document.getElementById(`cat-${catId}`);
+    if (!listEl) return;
+
+    // Get tasks for this category
+    const catTasks = Object.entries(effTasks).filter(([id, t]) => {
+      const catLabel = catInfo.label;
+      return t.cat === catLabel;
+    });
+
+    listEl.innerHTML = '';
+
+    catTasks.forEach(([taskId, task]) => {
+      const isWeekendHidden = task.days && !task.days.includes(dow);
+      const isDone = !!todayTasks[taskId];
+      const item = document.createElement('div');
+      item.className = `task-item${isDone ? ' done' : ''}${isWeekendHidden && !editMode ? ' weekend-hidden' : ''}`;
+      item.dataset.task = taskId;
+      item.dataset.points = task.pts;
+      item.dataset.cat = catId;
+      if (task.days) item.dataset.days = task.days.join(',');
+
+      if (editMode) {
+        const daysLabel = task.days ? task.days.map(d => ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'][d]).join(',') : 'Tous les jours';
+        item.innerHTML = `
+          <div class="edit-task-row">
+            <span class="edit-task-name">${task.name}</span>
+            <div class="edit-task-controls">
+              <span class="edit-pts-badge">+${task.pts} ✦</span>
+              <span class="edit-days-badge" onclick="editTaskDays('${taskId}')" title="Modifier les jours">${daysLabel}</span>
+              <button class="edit-btn-pts" onclick="editTaskPts('${taskId}')" title="Modifier les points">✦</button>
+              <button class="edit-btn-rename" onclick="editTaskRename('${taskId}')" title="Renommer">✏️</button>
+              <button class="edit-btn-delete" onclick="deleteTask('${taskId}')" title="Supprimer">🗑️</button>
+            </div>
+          </div>`;
+      } else {
+        const hasDaysBadge = task.days && !isWeekendHidden;
+        item.innerHTML = `
+          <label class="task-label">
+            <input type="checkbox" class="task-check" onchange="handleTask(this)"${isDone ? ' checked disabled' : ''}/>
+            <span class="custom-check"></span>
+            <span class="task-name">${task.name}</span>
+          </label>
+          <div class="task-right">
+            ${hasDaysBadge ? '<span class="task-badge-days">Lun–Ven</span>' : ''}
+            <span class="task-pts">+${task.pts} ✦</span>
+          </div>`;
+      }
+      listEl.appendChild(item);
+    });
+
+    // Add task button in edit mode
+    if (editMode) {
+      const addBtn = document.createElement('button');
+      addBtn.className = 'edit-add-task-btn';
+      addBtn.textContent = '+ Ajouter une tâche';
+      addBtn.onclick = () => addTaskToCategory(catId, catInfo.label);
+      listEl.appendChild(addBtn);
+
+      // Delete category button (only for custom cats or if empty)
+      const delCatBtn = document.getElementById(`del-cat-${catId}`);
+      if (catCard && !document.getElementById(`del-cat-${catId}`)) {
+        const hdr = catCard.querySelector('.category-header');
+        if (hdr && !hdr.querySelector('.del-cat-btn')) {
+          const b = document.createElement('button');
+          b.className = 'del-cat-btn';
+          b.title = 'Supprimer cette catégorie';
+          b.textContent = '🗑️';
+          b.onclick = (e) => { e.stopPropagation(); deleteCategory(catId); };
+          hdr.appendChild(b);
+        }
+      }
+    } else {
+      // Remove delete cat buttons when exiting edit mode
+      if (catCard) {
+        catCard.querySelectorAll('.del-cat-btn').forEach(b => b.remove());
+      }
+    }
+  });
+
+  // Render custom categories not yet in DOM
+  if (editMode) {
+    const customCatIds = Object.keys(state.customCategories || {});
+    customCatIds.forEach(catId => {
+      if (!document.getElementById(`cat-${catId}`)) {
+        insertCategoryCard(catId, state.customCategories[catId]);
+      }
+    });
+  }
+
+  updateAllCounts();
+  applyRecurringVisibility();
+}
+
+function insertCategoryCard(catId, catInfo) {
+  const main = document.getElementById('main-todo');
+  const addCatBtn = document.getElementById('add-cat-btn-container');
+  const card = document.createElement('div');
+  card.className = 'category-card';
+  card.id = `cat-${catId}`;
+  const icon = (state.categoryIcons || {})[catId] || catInfo.icon || '📁';
+  card.innerHTML = `
+    <div class="category-header" onclick="toggleCategory('${catId}')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-${catId}" onclick="openEmojiPicker('${catId}',event)">${icon}</span>
+        <h2 class="cat-title">${catInfo.label}</h2>
+        <span class="cat-count" id="count-${catId}">0/0</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-${catId}"></div></div>
+        <span class="chevron" id="chev-${catId}">▼</span>
+      </div>
+    </div>
+    <div class="task-list open" id="list-${catId}"></div>`;
+  if (addCatBtn) main.insertBefore(card, addCatBtn);
+  else main.appendChild(card);
+}
+
+function addTaskToCategory(catId, catLabel) {
+  const name = prompt('Nom de la tâche :');
+  if (!name || !name.trim()) return;
+  const ptsRaw = prompt('Points (1-20) :', '3');
+  const pts = Math.max(1, Math.min(20, parseInt(ptsRaw) || 3));
+  const daysRaw = prompt('Jours (1=Lun,2=Mar,3=Mer,4=Jeu,5=Ven,6=Sam,0=Dim)\nLaisse vide pour tous les jours.\nEx: 1,2,3,4,5 pour Lun-Ven', '');
+  let days = null;
+  if (daysRaw && daysRaw.trim()) {
+    days = daysRaw.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 0 && n <= 6);
+    if (days.length === 0) days = null;
+  }
+  const taskId = `custom-${catId}-${Date.now()}`;
+  if (!state.customTasks) state.customTasks = {};
+  state.customTasks[taskId] = { name: name.trim(), pts, cat: catLabel, ...(days ? { days } : {}) };
+  saveState();
+  rebuildTaskLists();
+}
+
+function deleteTask(taskId) {
+  if (!confirm('Supprimer cette tâche ?')) return;
+  if (taskMeta[taskId]) {
+    if (!state.deletedTasks) state.deletedTasks = [];
+    state.deletedTasks.push(taskId);
+  } else {
+    delete state.customTasks[taskId];
+  }
+  saveState();
+  rebuildTaskLists();
+}
+
+function editTaskRename(taskId) {
+  const tasks = getEffectiveTasks();
+  const current = tasks[taskId]?.name || '';
+  const newName = prompt('Nouveau nom :', current);
+  if (!newName || !newName.trim()) return;
+  if (taskMeta[taskId]) {
+    if (!state.customTasks) state.customTasks = {};
+    // Store override
+    state.customTasks[`override-${taskId}`] = { ...taskMeta[taskId], name: newName.trim(), _overrideFor: taskId };
+    // Actually modify taskMeta in-memory too
+    taskMeta[taskId].name = newName.trim();
+  } else if (state.customTasks[taskId]) {
+    state.customTasks[taskId].name = newName.trim();
+  }
+  saveState();
+  rebuildTaskLists();
+}
+
+function editTaskPts(taskId) {
+  const tasks = getEffectiveTasks();
+  const current = tasks[taskId]?.pts || 1;
+  const newPts = prompt('Nouveau nombre de points (1-20) :', current);
+  const pts = Math.max(1, Math.min(20, parseInt(newPts) || current));
+  if (taskMeta[taskId]) taskMeta[taskId].pts = pts;
+  if (state.customTasks[taskId]) state.customTasks[taskId].pts = pts;
+  saveState();
+  rebuildTaskLists();
+}
+
+function editTaskDays(taskId) {
+  const tasks = getEffectiveTasks();
+  const current = tasks[taskId]?.days;
+  const currentStr = current ? current.join(',') : '';
+  const daysRaw = prompt(
+    'Jours d\'apparition :\n1=Lun, 2=Mar, 3=Mer, 4=Jeu, 5=Ven, 6=Sam, 0=Dim\nLaisse vide pour tous les jours.\nEx: 1,2,3,4,5 pour Lun–Ven',
+    currentStr
+  );
+  if (daysRaw === null) return;
+  let days = null;
+  if (daysRaw.trim()) {
+    days = daysRaw.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n) && n >= 0 && n <= 6);
+    if (days.length === 0) days = null;
+  }
+  if (taskMeta[taskId]) taskMeta[taskId].days = days || undefined;
+  if (state.customTasks[taskId]) state.customTasks[taskId].days = days || undefined;
+  saveState();
+  rebuildTaskLists();
+}
+
+function addNewCategory() {
+  const label = prompt('Nom de la catégorie :');
+  if (!label || !label.trim()) return;
+  const catId = `cat-custom-${Date.now()}`;
+  if (!state.customCategories) state.customCategories = {};
+  state.customCategories[catId] = { label: label.trim(), icon: '📁' };
+  saveState();
+  rebuildTaskLists();
+  // Open the new category
+  const listEl = document.getElementById(`list-${catId}`);
+  if (listEl) listEl.classList.add('open');
+}
+
+function deleteCategory(catId) {
+  const effTasks = getEffectiveTasks();
+  const effCats = getEffectiveCategories();
+  const catLabel = effCats[catId]?.label;
+  const tasksInCat = Object.keys(effTasks).filter(id => effTasks[id].cat === catLabel);
+  const msg = tasksInCat.length > 0
+    ? `Supprimer la catégorie "${catLabel}" et ses ${tasksInCat.length} tâche(s) ?`
+    : `Supprimer la catégorie "${catLabel}" ?`;
+  if (!confirm(msg)) return;
+  // Delete all tasks in category
+  tasksInCat.forEach(id => {
+    if (taskMeta[id]) {
+      if (!state.deletedTasks) state.deletedTasks = [];
+      if (!state.deletedTasks.includes(id)) state.deletedTasks.push(id);
+    } else {
+      delete state.customTasks[id];
+    }
+  });
+  // Delete category
+  if (categories[catId]) {
+    if (!state.deletedCategories) state.deletedCategories = [];
+    state.deletedCategories.push(catId);
+  } else {
+    delete state.customCategories[catId];
+  }
+  // Remove from DOM
+  const card = document.getElementById(`cat-${catId}`);
+  if (card) card.remove();
+  saveState();
+  rebuildTaskLists();
+}
 
 // =====================================================
 // ===== START =========================================
