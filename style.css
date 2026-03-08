@@ -37,6 +37,31 @@ body.theme-acdc{--bg:#080400;--bg2:#100800;--bg3:#180e00;--surface:#221400;--sur
 body.theme-avenged{--bg:#06000a;--bg2:#0c0014;--bg3:#14001e;--surface:#1c002a;--surface2:#240036;--border:#400060;--accent:#8800cc;--accent2:#bb33ff;--accent3:#dd88ff;--text:#f8e8ff;--text2:#aa55cc;--text3:#662288;--shadow-accent:0 4px 24px rgba(136,0,204,.4)}
 body.theme-nirvana{--bg:#04040c;--bg2:#080814;--bg3:#0e0e1e;--surface:#141428;--surface2:#1c1c34;--border:#2a2a50;--accent:#ffee00;--accent2:#fff466;--accent3:#fff8aa;--text:#fffff0;--text2:#aaaacc;--text3:#556688;--shadow-accent:0 4px 24px rgba(255,238,0,.3)}
 
+/* SPACE */
+body.theme-cosmos{--bg:#04010f;--bg2:#080220;--bg3:#0e052e;--surface:#140840;--surface2:#1c0e52;--border:#2a1880;--accent:#6c63ff;--accent2:#a89cff;--accent3:#cec8ff;--text:#f0eeff;--text2:#9890cc;--text3:#504888;--shadow-accent:0 4px 24px rgba(108,99,255,.35)}
+body.theme-nebula{--bg:#0a0214;--bg2:#120420;--bg3:#1a062e;--surface:#220840;--surface2:#2c0c52;--border:#481880;--accent:#ff6ec7;--accent2:#ffaae6;--accent3:#ffd4f4;--text:#fff0fc;--text2:#cc88bb;--text3:#885577;--shadow-accent:0 4px 24px rgba(255,110,199,.35)}
+body.theme-blackhole{--bg:#000005;--bg2:#04020e;--bg3:#080418;--surface:#0e0828;--surface2:#140c38;--border:#201858;--accent:#444cf7;--accent2:#8890ff;--accent3:#bec2ff;--text:#eeeeff;--text2:#8888cc;--text3:#444488;--shadow-accent:0 4px 24px rgba(68,76,247,.4)}
+body.theme-mars{--bg:#100402;--bg2:#180804;--bg3:#220e06;--surface:#2e1408;--surface2:#3a1a0a;--border:#5a2c14;--accent:#e25822;--accent2:#ff7043;--accent3:#ffaa88;--text:#fff4ee;--text2:#cc6644;--text3:#884422;--shadow-accent:0 4px 24px rgba(226,88,34,.4)}
+body.theme-galaxy{--bg:#020a14;--bg2:#041020;--bg3:#08182e;--surface:#0c2040;--surface2:#102850;--border:#184070;--accent:#00c6ff;--accent2:#80e8ff;--accent3:#c0f4ff;--text:#e8f8ff;--text2:#50b8dd;--text3:#206880;--shadow-accent:0 4px 24px rgba(0,198,255,.35)}
+/* GAMING */
+body.theme-minecraft{--bg:#1a1a0a;--bg2:#222210;--bg3:#2a2a14;--surface:#363618;--surface2:#44441e;--border:#5c5c28;--accent:#5d8a3c;--accent2:#8bc34a;--accent3:#b8e07a;--text:#f4ffe0;--text2:#88aa55;--text3:#445522;--shadow-accent:0 4px 24px rgba(93,138,60,.35)}
+body.theme-zelda{--bg:#060400;--bg2:#0e0a00;--bg3:#181000;--surface:#241800;--surface2:#302200;--border:#503c00;--accent:#f9a825;--accent2:#ffd54f;--accent3:#ffecb3;--text:#fffde8;--text2:#c8a040;--text3:#806020;--shadow-accent:0 4px 24px rgba(249,168,37,.35)}
+body.theme-gta{--bg:#050302;--bg2:#0c0804;--bg3:#140e06;--surface:#1e1608;--surface2:#281e0c;--border:#463414;--accent:#ff8f00;--accent2:#ffb300;--accent3:#ffd54f;--text:#fff8e0;--text2:#cc8822;--text3:#885511;--shadow-accent:0 4px 24px rgba(255,143,0,.4)}
+body.theme-cyberpunk{--bg:#030014;--bg2:#060020;--bg3:#0c0030;--surface:#120044;--surface2:#180058;--border:#2c0088;--accent:#fcee09;--accent2:#ff2a6d;--accent3:#ff80aa;--text:#fff8e0;--text2:#cc9900;--text3:#886600;--shadow-accent:0 4px 24px rgba(252,238,9,.3)}
+body.theme-pokemon{--bg:#0a0800;--bg2:#120e00;--bg3:#1a1600;--surface:#242000;--surface2:#302a00;--border:#504400;--accent:#ffcb05;--accent2:#ff0000;--accent3:#ff6666;--text:#fffff0;--text2:#ccaa00;--text3:#886600;--shadow-accent:0 4px 24px rgba(255,203,5,.35)}
+/* NATURE */
+body.theme-forest{--bg:#050e08;--bg2:#081410;--bg3:#0e1e16;--surface:#142820;--surface2:#1a342a;--border:#255040;--accent:#2d6a4f;--accent2:#52b788;--accent3:#95d5b2;--text:#e8fff2;--text2:#60aa80;--text3:#306648;--shadow-accent:0 4px 24px rgba(45,106,79,.35)}
+body.theme-sakura{--bg:#0f050a;--bg2:#180a12;--bg3:#22101a;--surface:#2e1624;--surface2:#3a1c2e;--border:#5a2a48;--accent:#ff85a1;--accent2:#ffb3c6;--accent3:#ffd6e0;--text:#fff0f5;--text2:#cc7799;--text3:#884455;--shadow-accent:0 4px 24px rgba(255,133,161,.35)}
+body.theme-ocean2{--bg:#010d14;--bg2:#031420;--bg3:#051c2e;--surface:#082440;--surface2:#0c2e50;--border:#104870;--accent:#0077b6;--accent2:#00b4d8;--accent3:#90e0ef;--text:#e0f8ff;--text2:#4090b0;--text3:#205570;--shadow-accent:0 4px 24px rgba(0,119,182,.4)}
+body.theme-desert{--bg:#0e0b04;--bg2:#161208;--bg3:#1e180c;--surface:#2a2210;--surface2:#362c14;--border:#564820;--accent:#e9c46a;--accent2:#f4a261;--accent3:#e76f51;--text:#fff8e8;--text2:#c8a055;--text3:#886630;--shadow-accent:0 4px 24px rgba(233,196,106,.35)}
+body.theme-arctic{--bg:#030d10;--bg2:#061418;--bg3:#0a1c22;--surface:#0e2430;--surface2:#122c3c;--border:#1a4458;--accent:#a8dadc;--accent2:#caf0f8;--accent3:#e8faff;--text:#f0feff;--text2:#70b8c0;--text3:#307888;--shadow-accent:0 4px 24px rgba(168,218,220,.3)}
+/* HALLOWEEN */
+body.theme-halloween{--bg:#080200;--bg2:#100400;--bg3:#180800;--surface:#221000;--surface2:#2e1600;--border:#502800;--accent:#ff6b00;--accent2:#ff9500;--accent3:#ffcc66;--text:#fff8e0;--text2:#cc6600;--text3:#884400;--shadow-accent:0 4px 24px rgba(255,107,0,.4)}
+body.theme-vampire{--bg:#060000;--bg2:#0e0000;--bg3:#160000;--surface:#200000;--surface2:#2c0000;--border:#500000;--accent:#8b0000;--accent2:#cc0000;--accent3:#ff4444;--text:#fff0f0;--text2:#aa4444;--text3:#662222;--shadow-accent:0 4px 24px rgba(139,0,0,.5)}
+body.theme-witch{--bg:#050008;--bg2:#0a0014;--bg3:#10001e;--surface:#180028;--surface2:#200034;--border:#3c0060;--accent:#6a0dad;--accent2:#9b30ff;--accent3:#cc88ff;--text:#f8e8ff;--text2:#9955cc;--text3:#552288;--shadow-accent:0 4px 24px rgba(106,13,173,.4)}
+body.theme-zombie{--bg:#020804;--bg2:#060e08;--bg3:#0c160e;--surface:#121e14;--surface2:#18281a;--border:#2a4030;--accent:#4a7c59;--accent2:#6dbf82;--accent3:#a8e0b2;--text:#e8ffee;--text2:#559966;--text3:#2a5534;--shadow-accent:0 4px 24px rgba(74,124,89,.35)}
+body.theme-ghost{--bg:#060810;--bg2:#0c1020;--bg3:#121830;--surface:#181e40;--surface2:#1e2450;--border:#2a3470;--accent:#b0c4de;--accent2:#dce8f5;--accent3:#f0f6ff;--text:#f8faff;--text2:#8899bb;--text3:#445577;--shadow-accent:0 4px 24px rgba(176,196,222,.25)}
+
 /* ===== RESET ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}

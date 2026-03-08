@@ -120,6 +120,34 @@ const themeCategories = [
     { id:'avenged',   name:'Avenged Sevenfold',       colors:['#8800cc','#08000e','#cc44ff'], price:450, icon:'💀', desc:'Hail to the King' },
     { id:'nirvana',   name:'Nirvana',                 colors:['#ffee00','#04040a','#aaaaff'], price:415, icon:'🌀', desc:'Smells Like Teen Spirit' },
   ]},
+  { id:'space', label:'🌌 Espace & Cosmos', themes:[
+    { id:'cosmos',    name:'Cosmos',     colors:['#6c63ff','#04010f','#a89cff'], price:300, icon:'🌌', desc:'Aux confins de l\'univers' },
+    { id:'nebula',    name:'Nébuleuse',  colors:['#ff6ec7','#0a0214','#ffaae6'], price:350, icon:'💫', desc:'Poussière d\'étoiles' },
+    { id:'blackhole', name:'Trou noir',  colors:['#444cf7','#000005','#8890ff'], price:400, icon:'🕳️', desc:'Point de non-retour' },
+    { id:'mars',      name:'Mars',       colors:['#e25822','#100402','#ff7043'], price:320, icon:'🔴', desc:'La planète rouge' },
+    { id:'galaxy',    name:'Galaxie',    colors:['#00c6ff','#020a14','#80e8ff'], price:380, icon:'🌠', desc:'Milky Way' },
+  ]},
+  { id:'gaming', label:'🎮 Jeux Vidéo', themes:[
+    { id:'minecraft', name:'Minecraft',  colors:['#5d8a3c','#1a1a0a','#8bc34a'], price:390, icon:'⛏️', desc:'Creuse & construis' },
+    { id:'zelda',     name:'Zelda',      colors:['#f9a825','#060400','#ffd54f'], price:420, icon:'🗡️', desc:'It\'s dangerous to go alone' },
+    { id:'gta',       name:'GTA',        colors:['#ff8f00','#050302','#ffb300'], price:410, icon:'🚗', desc:'Welcome to Los Santos' },
+    { id:'cyberpunk', name:'Cyberpunk',  colors:['#fcee09','#030014','#ff2a6d'], price:460, icon:'🤖', desc:'Night City' },
+    { id:'pokemon',   name:'Pokémon',    colors:['#ffcb05','#0a0800','#ff0000'], price:400, icon:'⚡', desc:'Attrapez-les tous !' },
+  ]},
+  { id:'nature', label:'🌿 Nature & Forêt', themes:[
+    { id:'forest',    name:'Forêt',      colors:['#2d6a4f','#050e08','#52b788'], price:200, icon:'🌲', desc:'Profondeurs verdoyantes' },
+    { id:'sakura',    name:'Sakura',     colors:['#ff85a1','#0f050a','#ffb3c6'], price:250, icon:'🌸', desc:'Fleurs de cerisier' },
+    { id:'ocean2',    name:'Océan prof.',colors:['#0077b6','#010d14','#00b4d8'], price:220, icon:'🌊', desc:'Abysses bleues' },
+    { id:'desert',    name:'Désert',     colors:['#e9c46a','#0e0b04','#f4a261'], price:210, icon:'🏜️', desc:'Sable et soleil' },
+    { id:'arctic',    name:'Arctique',   colors:['#a8dadc','#030d10','#caf0f8'], price:230, icon:'🧊', desc:'Toundra glacée' },
+  ]},
+  { id:'halloween', label:'🎃 Halloween & Horreur', themes:[
+    { id:'halloween', name:'Halloween',  colors:['#ff6b00','#080200','#ff9500'], price:300, icon:'🎃', desc:'Trick or treat !' },
+    { id:'vampire',   name:'Vampire',    colors:['#8b0000','#060000','#cc0000'], price:350, icon:'🧛', desc:'La nuit des morts' },
+    { id:'witch',     name:'Sorcière',   colors:['#6a0dad','#050008','#9b30ff'], price:320, icon:'🧙', desc:'Double, double, toil and trouble' },
+    { id:'zombie',    name:'Zombie',     colors:['#4a7c59','#020804','#6dbf82'], price:280, icon:'🧟', desc:'Braaaains...' },
+    { id:'ghost',     name:'Fantôme',    colors:['#b0c4de','#060810','#dce8f5'], price:260, icon:'👻', desc:'Boooo !' },
+  ]},
 ];
 const themes = themeCategories.flatMap(c => c.themes);
 
@@ -214,16 +242,17 @@ function getDayKey(y,m,d) { return `${y}-${String(m+1).padStart(2,'0')}-${String
 // ===== RECURRING TASKS ===============================
 // =====================================================
 function applyRecurringVisibility() {
-  const dow = new Date().getDay(); // 0=Sun,1=Mon...
+  const dow = new Date().getDay();
   document.querySelectorAll('.task-item[data-days]').forEach(item => {
     const days = item.dataset.days.split(',').map(Number);
-    if (!days.includes(dow)) {
-      item.classList.add('weekend-hidden');
-    } else {
-      item.classList.remove('weekend-hidden');
-    }
+    item.classList.toggle('weekend-hidden', !days.includes(dow));
   });
-  // Update counts after hiding/showing
+  // Hide lycée category entirely on weekends
+  const lyceeCat = document.getElementById('cat-lycee');
+  if (lyceeCat) {
+    const isWeekend = dow === 0 || dow === 6;
+    lyceeCat.style.display = isWeekend ? 'none' : '';
+  }
 }
 
 // =====================================================
@@ -570,6 +599,10 @@ const themeAccents = {
   netflix:'#e50914', starwars:'#ffe81f', avatar:'#00b4d8',
   metallica:'#c8a000', slipknot:'#cc2200', bfmv:'#ff0040',
   acdc:'#ff6600', avenged:'#8800cc', nirvana:'#ffee00',
+  cosmos:'#6c63ff', nebula:'#ff6ec7', blackhole:'#444cf7', mars:'#e25822', galaxy:'#00c6ff',
+  minecraft:'#5d8a3c', zelda:'#f9a825', gta:'#ff8f00', cyberpunk:'#fcee09', pokemon:'#ffcb05',
+  forest:'#2d6a4f', sakura:'#ff85a1', ocean2:'#0077b6', desert:'#e9c46a', arctic:'#a8dadc',
+  halloween:'#ff6b00', vampire:'#8b0000', witch:'#6a0dad', zombie:'#4a7c59', ghost:'#b0c4de',
 };
 
 function updateFavicon() {
@@ -1413,13 +1446,18 @@ function showToast(msg) {
 // =====================================================
 
 const COMPANION_ANIMALS = [
-  { id:'dog',   emoji:'🐶', name:'Chien',   price:0    },
-  { id:'cat',   emoji:'🐱', name:'Chat',    price:500  },
-  { id:'fox',   emoji:'🦊', name:'Renard',  price:500  },
-  { id:'wolf',  emoji:'🐺', name:'Loup',    price:700  },
-  { id:'shark', emoji:'🦈', name:'Requin',  price:800  },
-  { id:'lion',  emoji:'🦁', name:'Lion',    price:900  },
-  { id:'dragon',emoji:'🐉', name:'Dragon',  price:1000 },
+  { id:'dog',   emoji:'🐶', name:'Chien',    price:0    },
+  { id:'cat',   emoji:'🐱', name:'Chat',     price:500  },
+  { id:'fox',   emoji:'🦊', name:'Renard',   price:500  },
+  { id:'wolf',  emoji:'🐺', name:'Loup',     price:700  },
+  { id:'shark', emoji:'🦈', name:'Requin',   price:800  },
+  { id:'lion',  emoji:'🦁', name:'Lion',     price:900  },
+  { id:'dragon',emoji:'🐉', name:'Dragon',   price:1000 },
+  { id:'tiger', emoji:'🐯', name:'Tigre',    price:600  },
+  { id:'unicorn',emoji:'🦄',name:'Licorne',  price:800  },
+  { id:'eagle', emoji:'🦅', name:'Aigle',    price:700  },
+  { id:'dino',  emoji:'🦖', name:'Dinosaure',price:750  },
+  { id:'octopus',emoji:'🐙',name:'Pieuvre',  price:650  },
 ];
 
 const TREATS = [
