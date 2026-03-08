@@ -29,29 +29,33 @@ let state = {
 // ===== CONSTANTS =====================================
 // =====================================================
 const taskMeta = {
-  'etude-1':   { name:'Réviser',                       pts:5, cat:'Études',          timeMin:60  },
-  'etude-2':   { name:'Exercices de la semaine',       pts:3, cat:'Études',          timeMin:45  },
-  'etude-3':   { name:"Faire l'anglais",               pts:2, cat:'Études',          timeMin:30  },
-  'etude-4':   { name:'Réviser le code',               pts:5, cat:'Études',          timeMin:60  },
-  'musique-1': { name:'Set liste du groupe',           pts:1, cat:'Musique',         timeMin:45  },
-  'musique-2': { name:'Solo Hail to the King',         pts:1, cat:'Musique',         timeMin:30  },
-  'musique-3': { name:'Faire un TikTok',               pts:1, cat:'Musique',         timeMin:20  },
-  'autre-1':   { name:'Séance de sport',               pts:4, cat:'Autre',           timeMin:60, days:[1,2,3,4,5] },
-  'autre-2':   { name:'Travailler le skate',           pts:2, cat:'Autre',           timeMin:45  },
-  'autre-3':   { name:'Prendre le traitement',         pts:5, cat:'Autre',           timeMin:5   },
-  'autre-4':   { name:'Hygiène',                       pts:5, cat:'Autre',           timeMin:20  },
-  'autre-5':   { name:'Aller au lycée',                pts:3, cat:'Autre',           timeMin:480, days:[1,2,3,4,5] },
-  'jeux-1':    { name:'Ouvrir les boosters Pokémon',   pts:2, cat:'Jeux',            timeMin:15  },
-  'jeux-2':    { name:'Jouer à Pokémon GO',            pts:1, cat:'Jeux',            timeMin:20  },
-  'jeux-3':    { name:'Jouer à Arknights',             pts:1, cat:'Jeux',            timeMin:20  },
-  'jeux-4':    { name:'Gagner 5 niveaux Fortnite',     pts:1, cat:'Jeux',            timeMin:60  },
-  'jeux-5':    { name:'Gérer le royaume sur Sylvaris', pts:2, cat:'Jeux',            timeMin:30  },
-  'culture-1': { name:'Regarder un film ou série',     pts:2, cat:'Culture',         timeMin:90  },
-  'culture-2': { name:'Lire un livre',                 pts:4, cat:'Culture',         timeMin:45  },
-  'culture-3': { name:'Écouter de la musique',         pts:2, cat:'Culture',         timeMin:30  },
-  'reseaux-1': { name:'Faire les flammes Snap',        pts:1, cat:'Réseaux sociaux', timeMin:5   },
-  'reseaux-2': { name:'Faire le BeReal',               pts:1, cat:'Réseaux sociaux', timeMin:5   },
-  'reseaux-3': { name:'Garder la série Twitch',        pts:1, cat:'Réseaux sociaux', timeMin:60  },
+  'etude-1':   { name:'Réviser les cours',                     pts:5, cat:'Études',          timeMin:60  },
+  'etude-2':   { name:'Faire les exercices de la semaine',     pts:3, cat:'Études',          timeMin:45  },
+  'etude-3':   { name:"Réviser l'anglais sur Duolingo",        pts:2, cat:'Études',          timeMin:30  },
+  'etude-4':   { name:'Réviser le code',                       pts:5, cat:'Études',          timeMin:60  },
+  'musique-1': { name:'Pratiquer la set liste de Wayward Ship', pts:1, cat:'Musique',        timeMin:45  },
+  'musique-2': { name:'Pratiquer le solo de Hail to the King', pts:1, cat:'Musique',         timeMin:30  },
+  'musique-3': { name:'Faire un TikTok guitare',               pts:1, cat:'Musique',         timeMin:20  },
+  'sante-1':   { name:'Faire une séance de sport',             pts:4, cat:'Sport & Santé',   timeMin:60, days:[1,2,3,4,5] },
+  'sante-2':   { name:'Pratiquer le skate',                    pts:2, cat:'Sport & Santé',   timeMin:45  },
+  'sante-3':   { name:'Prendre son traitement',                pts:5, cat:'Sport & Santé',   timeMin:5   },
+  'sante-4':   { name:"S'entraîner au Rubik's cube",           pts:2, cat:'Sport & Santé',   timeMin:20  },
+  'sante-5':   { name:"Boire 2L d'eau",                        pts:2, cat:'Sport & Santé',   timeMin:5   },
+  'sante-6':   { name:'Manger 5 fruits et légumes',            pts:4, cat:'Sport & Santé',   timeMin:10  },
+  'sante-7':   { name:'Se coucher avant minuit',               pts:3, cat:'Sport & Santé',   timeMin:5   },
+  'lycee-1':   { name:'Aller au lycée',                        pts:3, cat:'Lycée',           timeMin:480, days:[1,2,3,4,5] },
+  'jeux-1':    { name:'Ouvrir les boosters Pokémon',           pts:2, cat:'Jeux',            timeMin:15  },
+  'jeux-2':    { name:'Jouer à Pokémon GO',                    pts:1, cat:'Jeux',            timeMin:20  },
+  'jeux-3':    { name:'Jouer à Arknights',                     pts:1, cat:'Jeux',            timeMin:20  },
+  'jeux-4':    { name:'Gagner 5 niveaux Fortnite',             pts:1, cat:'Jeux',            timeMin:60  },
+  'jeux-5':    { name:'Gérer le royaume sur Sylvaris',         pts:2, cat:'Jeux',            timeMin:30  },
+  'culture-1': { name:'Regarder un film ou série',             pts:2, cat:'Culture & Médias',timeMin:90  },
+  'culture-2': { name:'Lire un livre',                         pts:4, cat:'Culture & Médias',timeMin:45  },
+  'culture-3': { name:'Écouter de la musique',                 pts:2, cat:'Culture & Médias',timeMin:30  },
+  'culture-4': { name:'Découvrir un nouvel artiste',           pts:2, cat:'Culture & Médias',timeMin:20  },
+  'reseaux-1': { name:'Faire les flammes Snap',                pts:1, cat:'Réseaux sociaux', timeMin:5   },
+  'reseaux-2': { name:'Faire le BeReal',                       pts:1, cat:'Réseaux sociaux', timeMin:5   },
+  'reseaux-3': { name:'Garder la série Twitch',                pts:1, cat:'Réseaux sociaux', timeMin:60  },
 };
 
 const bonusPool = [
@@ -122,13 +126,14 @@ const themes = themeCategories.flatMap(c => c.themes);
 const categories = {
   etude:   { total:4, label:'Études' },
   musique: { total:3, label:'Musique' },
-  autre:   { total:5, label:'Autre' },
+  sante:   { total:7, label:'Sport & Santé' },
+  lycee:   { total:1, label:'Lycée' },
   jeux:    { total:5, label:'Jeux' },
-  culture: { total:3, label:'Culture' },
+  culture: { total:4, label:'Culture & Médias' },
   reseaux: { total:3, label:'Réseaux sociaux' },
 };
 
-const defaultCatIcons = { etude:'📚', musique:'🎸', autre:'⚡', jeux:'🎮', culture:'🎬', reseaux:'📱' };
+const defaultCatIcons = { etude:'📚', musique:'🎸', sante:'🏃', lycee:'🏫', jeux:'🎮', culture:'🎬', reseaux:'📱' };
 const EMOJI_OPTIONS = ['📚','🎸','⚡','🎮','🎬','📱','🏋️','🧠','🎯','🏆','🌟','🔥','💡','🎵','🎨','🏃','🧩','📖','✏️','🎲','🦁','🐉','🌈','⚔️','🛡️','🚀','💻','🎤','🎧','📸','🎃','👾','🌙','☀️','💫','🦋'];
 const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const monthNamesShort = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
@@ -172,6 +177,8 @@ function init() {
   if (!state.notifications) state.notifications = {};
   if (!state.bonusTask) state.bonusTask = null;
   if (!state.shownRecaps) state.shownRecaps = [];
+  if (!state.companion) state.companion = { animal:'dog', level:1, xp:0 };
+  if (!state.companionSkins) state.companionSkins = [];
 
   applyTheme(state.activeTheme);
   applyCustomBg();
@@ -224,9 +231,10 @@ function applyRecurringVisibility() {
 // =====================================================
 function initBonusTask() {
   const today = getTodayKey();
-  // Reset bonus if new day
   if (!state.bonusTask || state.bonusTask.date !== today) {
-    const pick = bonusPool[Math.floor(Math.random() * bonusPool.length)];
+    const level = state.companion?.level || 1;
+    const pool = getBonusPoolForLevel(level);
+    const pick = pool[Math.floor(Math.random() * pool.length)];
     state.bonusTask = { name: pick.name, pts: pick.pts, date: today, done: false };
     saveState();
   }
@@ -302,6 +310,9 @@ function handleTask(checkbox) {
 
   updatePoints(); updateAllCounts(); updateStreak(); renderCalendar();
   checkBadges(); saveState();
+  // Refresh companion mood if panel open
+  const moodEl = document.getElementById('companion-mood');
+  if (moodEl) moodEl.textContent = getCompanionMood();
 }
 
 function checkCategoryComplete(cat, today) {
@@ -427,6 +438,7 @@ function showPanel(name) {
   if (name === 'stats') renderStatsPanel();
   if (name === 'sync') renderSyncPanel();
   if (name === 'theme') renderCustomBgSection();
+  if (name === 'companion') renderCompanionPanel();
 }
 function closePanel(clearActive=true) {
   if (currentPanel) {
@@ -549,10 +561,46 @@ function recordThemeTime(newId) {
 // =====================================================
 // ===== THEMES ========================================
 // =====================================================
+// Accent color per theme (matches CSS)
+const themeAccents = {
+  default:'#7c5cfc', light:'#7c5cfc', aurora:'#00d4aa', sunset:'#ff6b35',
+  mint:'#2ecc71', rose:'#e91e8c', ocean:'#2196f3', gold:'#f5c518',
+  neon:'#ff2d78', slate:'#64748b', cherry:'#dc143c', cyber:'#00ffcc',
+  strangerthings:'#cc0000', piratescaraibes:'#c8860a', mercredi:'#888888',
+  netflix:'#e50914', starwars:'#ffe81f', avatar:'#00b4d8',
+  metallica:'#c8a000', slipknot:'#cc2200', bfmv:'#ff0040',
+  acdc:'#ff6600', avenged:'#8800cc', nirvana:'#ffee00',
+};
+
+function updateFavicon() {
+  const color = themeAccents[state.activeTheme] || '#7c5cfc';
+  const useAnimal = state.faviconUseAnimal && state.companion?.animal;
+  let inner;
+  if (useAnimal) {
+    const animal = COMPANION_ANIMALS.find(a => a.id === state.companion.animal);
+    inner = `<rect width='100' height='100' rx='20' fill='${color}'/><text x='50' y='72' font-size='60' text-anchor='middle'>${animal?.emoji || '⚡'}</text>`;
+  } else {
+    inner = `<rect width='100' height='100' rx='20' fill='${color}'/><polygon points='58,8 28,54 48,54 42,92 72,46 52,46' fill='white'/>`;
+  }
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>${inner}</svg>`;
+  let link = document.querySelector("link[rel='icon']");
+  if (!link) { link = document.createElement('link'); link.rel = 'icon'; link.type = 'image/svg+xml'; document.head.appendChild(link); }
+  link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+function toggleFaviconAnimal() {
+  state.faviconUseAnimal = !state.faviconUseAnimal;
+  updateFavicon();
+  saveState();
+  renderCompanionPanel();
+  showToast(state.faviconUseAnimal ? '🔖 Icône de l\'onglet mise à jour !' : '⚡ Icône remise à l\'éclair');
+}
+
 function applyTheme(id) {
   document.body.className = id === 'default' ? '' : `theme-${id}`;
   if (state.customBg) document.body.classList.add('has-custom-bg');
   state.activeTheme = id;
+  updateFavicon();
 }
 function renderThemeGrid() {
   const grid = document.getElementById('theme-grid');
@@ -995,10 +1043,16 @@ function disableNotif(taskId) {
 // =====================================================
 // ===== SYNC PANEL ====================================
 // =====================================================
+function safeEncode(obj) {
+  return btoa(encodeURIComponent(JSON.stringify(obj)));
+}
+function safeDecode(str) {
+  try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e) { return JSON.parse(str); }
+}
+
 function renderSyncPanel() {
   const body = document.getElementById('sync-body');
-  const code = btoa(JSON.stringify(state)).slice(0,40);
-  const fullCode = btoa(JSON.stringify({
+  const exportData = {
     points: state.points,
     unlockedThemes: state.unlockedThemes,
     checkedTasks: state.checkedTasks,
@@ -1007,12 +1061,17 @@ function renderSyncPanel() {
     bestStreak: state.bestStreak,
     customBgUnlocked: state.customBgUnlocked,
     bonusDoneCount: state.bonusDoneCount,
-  }));
+    companion: state.companion,
+    companionSkins: state.companionSkins,
+  };
+  let fullCode = '';
+  try { fullCode = safeEncode(exportData); } catch(e) { fullCode = 'erreur-encodage'; }
+  const preview = fullCode.slice(0, 60) + '…';
 
   body.innerHTML = `
     <div class="sync-section">
       <div class="sync-section-title">📤 Exporter mes données</div>
-      <div class="sync-code" id="sync-export-code" style="font-size:10px;word-break:break-all">${fullCode.slice(0,60)}…</div>
+      <div class="sync-code" style="font-size:10px;word-break:break-all">${preview}</div>
       <button class="sync-btn" onclick="copySyncCode()">📋 Copier le code complet</button>
       <button class="sync-btn secondary" onclick="downloadSyncData()">💾 Télécharger (.json)</button>
     </div>
@@ -1023,11 +1082,11 @@ function renderSyncPanel() {
     </div>
     <div class="sync-section">
       <div class="sync-section-title">🔔 Rappels par tâche</div>
-      ${Object.entries(taskMeta).slice(0,8).map(([id,m]) => `
+      ${Object.entries(taskMeta).slice(0, 8).map(([id, m]) => `
         <div class="sync-notif-row">
           <span class="sync-notif-name">${m.name}</span>
           <label class="toggle-switch">
-            <input type="checkbox" ${state.notifications[id]?'checked':''} onchange="toggleNotif('${id}','${m.name}',this)"/>
+            <input type="checkbox" ${state.notifications[id] ? 'checked' : ''} onchange="toggleNotif('${id}','${m.name}',this)"/>
             <span class="toggle-slider"></span>
           </label>
         </div>`).join('')}
@@ -1036,7 +1095,7 @@ function renderSyncPanel() {
 }
 
 function copySyncCode() {
-  const data = JSON.stringify({
+  const data = {
     points: state.points,
     unlockedThemes: state.unlockedThemes,
     checkedTasks: state.checkedTasks,
@@ -1045,8 +1104,12 @@ function copySyncCode() {
     bestStreak: state.bestStreak,
     customBgUnlocked: state.customBgUnlocked,
     bonusDoneCount: state.bonusDoneCount,
-  });
-  navigator.clipboard.writeText(btoa(data)).then(() => showToast('📋 Code copié !')).catch(() => showToast('Erreur copie'));
+    companion: state.companion,
+    companionSkins: state.companionSkins,
+  };
+  try {
+    navigator.clipboard.writeText(safeEncode(data)).then(() => showToast('📋 Code copié !')).catch(() => showToast('Erreur copie'));
+  } catch(e) { showToast('Erreur encodage'); }
 }
 function downloadSyncData() {
   const data = JSON.stringify(state, null, 2);
@@ -1060,9 +1123,8 @@ function importSyncData() {
   const input = document.getElementById('sync-import-input')?.value.trim();
   if (!input) return;
   try {
-    let parsed;
-    try { parsed = JSON.parse(atob(input)); } catch { parsed = JSON.parse(input); }
-    const allowed = ['points','unlockedThemes','checkedTasks','pointsHistory','unlockedBadges','bestStreak','customBgUnlocked','bonusDoneCount','themeUsage','categoryIcons','soundOn','customBg'];
+    const parsed = safeDecode(input);
+    const allowed = ['points','unlockedThemes','checkedTasks','pointsHistory','unlockedBadges','bestStreak','customBgUnlocked','bonusDoneCount','themeUsage','categoryIcons','soundOn','customBg','companion','companionSkins'];
     allowed.forEach(k => { if (parsed[k] !== undefined) state[k] = parsed[k]; });
     saveState();
     location.reload();
@@ -1344,6 +1406,297 @@ function showToast(msg) {
   t.textContent=msg; t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// =====================================================
+// ===== COMPANION =====================================
+// =====================================================
+
+const COMPANION_ANIMALS = [
+  { id:'dog',   emoji:'🐶', name:'Chien',   price:0    },
+  { id:'cat',   emoji:'🐱', name:'Chat',    price:500  },
+  { id:'fox',   emoji:'🦊', name:'Renard',  price:500  },
+  { id:'wolf',  emoji:'🐺', name:'Loup',    price:700  },
+  { id:'shark', emoji:'🦈', name:'Requin',  price:800  },
+  { id:'lion',  emoji:'🦁', name:'Lion',    price:900  },
+  { id:'dragon',emoji:'🐉', name:'Dragon',  price:1000 },
+];
+
+const TREATS = [
+  { id:'croquette', icon:'🟤', name:'Croquette',       price:3,  xp:10  },
+  { id:'biscuit',   icon:'🦴', name:'Biscuit',         price:5,  xp:18  },
+  { id:'premium',   icon:'🥩', name:'Friandise premium',price:8,  xp:30  },
+  { id:'meal',      icon:'🍖', name:'Repas complet',   price:10, xp:45  },
+  { id:'cake',      icon:'🎂', name:'Gâteau spécial',  price:15, xp:80  },
+  { id:'candy',     icon:'🍬', name:'Bonbon magique',  price:7,  xp:25  },
+];
+
+// XP needed to reach next level from current level
+function xpForLevel(level) {
+  return Math.floor(100 * level * Math.pow(1.15, level - 1));
+}
+
+// Bonus pool by level tier
+const BONUS_BY_LEVEL = {
+  0:  [ // lv 1-9
+    {name:"Faire 10 pompes",pts:2},{name:"Boire 2L d'eau",pts:2},
+    {name:"Ranger sa chambre",pts:3},{name:"Appeler un ami",pts:2},
+    {name:"Méditer 5 minutes",pts:2},{name:"Écrire dans un journal",pts:3},
+    {name:"Apprendre 5 mots",pts:3},{name:"Faire une promenade",pts:2},
+    {name:"Dessiner quelque chose",pts:2},{name:"Cuisiner un repas",pts:3},
+  ],
+  10: [ // lv 10-19
+    {name:"Faire 20 pompes",pts:4},{name:"Boire 2.5L d'eau",pts:4},
+    {name:"Nettoyer une pièce entière",pts:4},{name:"Écrire une demi-page",pts:4},
+    {name:"Apprendre 10 mots",pts:4},{name:"Marcher 30 min",pts:4},
+    {name:"Faire 3 séries d'abdos",pts:4},{name:"Cuisiner un plat complet",pts:4},
+  ],
+  20: [ // lv 20-29
+    {name:"Faire 30 pompes",pts:5},{name:"Courir 1km",pts:5},
+    {name:"Écrire une page entière",pts:5},{name:"Apprendre 15 mots",pts:5},
+    {name:"30 min de lecture",pts:5},{name:"Faire du sport 45 min",pts:5},
+    {name:"Pratiquer la guitare 1h",pts:5},{name:"Résoudre 5 exercices de maths",pts:5},
+  ],
+  30: [ // lv 30-39
+    {name:"Courir 2km",pts:6},{name:"Lire 50 pages",pts:6},
+    {name:"1h de révision concentrée",pts:6},{name:"Faire 50 pompes",pts:6},
+    {name:"Apprendre 20 nouveaux mots",pts:6},{name:"Écrire 2 pages",pts:6},
+    {name:"Cuisiner un repas élaboré",pts:6},{name:"1h de pratique musicale",pts:6},
+  ],
+  40: [ // lv 40-49
+    {name:"Courir 3km",pts:7},{name:"Lire 80 pages",pts:7},
+    {name:"1h30 de révision sans pause",pts:7},{name:"Faire 100 abdos",pts:7},
+    {name:"Apprendre 30 mots en une session",pts:7},{name:"Composer une courte mélodie",pts:7},
+    {name:"Écrire 3 pages",pts:7},{name:"Faire une séance HIIT complète",pts:7},
+  ],
+  50: [ // lv 50-59
+    {name:"Courir 5km",pts:8},{name:"Lire un nouveau livre entier",pts:8},
+    {name:"2h de travail intensif",pts:8},{name:"Faire 200 pompes dans la journée",pts:8},
+    {name:"Apprendre 50 mots",pts:8},{name:"Enregistrer une démo musicale",pts:8},
+    {name:"Écrire 5 pages",pts:8},{name:"Nager 1km",pts:8},
+  ],
+  60: [ // lv 60-74
+    {name:"Courir 7km",pts:9},{name:"Terminer 2 livres cette semaine",pts:9},
+    {name:"3h de travail sans distraction",pts:9},{name:"Finir un chapitre de cours complet",pts:9},
+    {name:"Composer une chanson entière",pts:9},{name:"Apprendre un solo de guitare",pts:9},
+    {name:"Courir 1h sans s'arrêter",pts:9},{name:"Faire 500 abdos dans la journée",pts:9},
+  ],
+  75: [ // lv 75-99
+    {name:"Courir 10km",pts:12},{name:"Finir un projet personnel",pts:12},
+    {name:"Maîtriser un nouveau morceau complet",pts:12},{name:"Écrire un article de blog",pts:12},
+    {name:"3h de sport intense",pts:12},{name:"Lire 200 pages en une journée",pts:12},
+    {name:"Terminer un module de cours en ligne",pts:12},{name:"Courir un semi-marathon",pts:12},
+  ],
+  100: [ // lv 100
+    {name:"🏆 Courir un marathon complet",pts:15},{name:"🏆 Écrire un chapitre de roman",pts:15},
+    {name:"🏆 Composer et enregistrer une chanson",pts:15},{name:"🏆 Maîtriser une compétence entière",pts:15},
+    {name:"🏆 Pratiquer 6h de sport dans la semaine",pts:15},{name:"🏆 Lire 3 livres en un mois",pts:15},
+  ],
+};
+
+function getBonusPoolForLevel(level) {
+  const tiers = [100, 75, 60, 50, 40, 30, 20, 10, 0];
+  for (const t of tiers) { if (level >= t) return BONUS_BY_LEVEL[t]; }
+  return BONUS_BY_LEVEL[0];
+}
+
+function getCompanionMood() {
+  const today = getTodayKey();
+  const todayTasks = state.checkedTasks[today] || {};
+  const cnt = Object.keys(todayTasks).filter(k => k !== 'bonus' && todayTasks[k]).length;
+  if (cnt === 0)   return "😴 J'attends que tu fasses quelque chose...";
+  if (cnt <= 2)    return "🥱 C'est un début... allez !";
+  if (cnt <= 4)    return "🙂 Bien, continue comme ça !";
+  if (cnt <= 6)    return "😄 Je suis fier de toi !";
+  if (cnt <= 9)    return "🤩 Tu déchires tout aujourd'hui !";
+  return "🔥 LÉGENDAIRE. Je t'adore.";
+}
+
+function getXpTierClass(level) {
+  if (level >= 100) return 'xp-tier-6';
+  if (level >= 80)  return 'xp-tier-5';
+  if (level >= 60)  return 'xp-tier-4';
+  if (level >= 40)  return 'xp-tier-3';
+  if (level >= 20)  return 'xp-tier-2';
+  return 'xp-tier-1';
+}
+
+function renderCompanionPanel() {
+  const body = document.getElementById('companion-body');
+  if (!body) return;
+  const c = state.companion || { animal:'dog', level:1, xp:0 };
+  const animal = COMPANION_ANIMALS.find(a => a.id === c.animal) || COMPANION_ANIMALS[0];
+  const level = c.level || 1;
+  const xp = c.xp || 0;
+  const xpNeeded = level >= 100 ? 999999 : xpForLevel(level);
+  const xpPct = level >= 100 ? 100 : Math.min(100, Math.round((xp / xpNeeded) * 100));
+  const tierClass = getXpTierClass(level);
+  const mood = getCompanionMood();
+
+  body.innerHTML = `
+    <!-- STAGE -->
+    <div class="companion-stage">
+      <div class="companion-animal" id="companion-animal" onclick="petCompanion()">${animal.emoji}</div>
+      <div class="companion-name">${animal.name}</div>
+      <div class="companion-level-badge">Niveau ${level}</div>
+      <button class="companion-favicon-btn${state.faviconUseAnimal ? ' active' : ''}" onclick="toggleFaviconAnimal()">
+        ${state.faviconUseAnimal ? '⚡ Utiliser l\'éclair' : `${animal.emoji} Utiliser comme icône d'onglet`}
+      </button>
+      <div class="companion-mood" id="companion-mood">${mood}</div>
+      <div class="companion-xp-area">
+        <div class="companion-xp-label">
+          <span>XP</span>
+          <span>${level >= 100 ? 'MAX 🏆' : `${xp} / ${xpNeeded}`}</span>
+        </div>
+        <div class="companion-xp-track">
+          <div class="companion-xp-fill ${tierClass}" id="companion-xp-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FRIANDISES -->
+    <div class="companion-section">
+      <div class="companion-section-title">
+        🍖 Friandises
+        <span class="companion-pts-inline" id="companion-pts">${state.points} ✦</span>
+      </div>
+      <div class="treats-grid">
+        ${TREATS.map(t => {
+          const canAfford = state.points >= t.price;
+          return `<div class="treat-card${canAfford?'':' cant-afford'}" onclick="feedTreat('${t.id}')">
+            <span class="treat-icon">${t.icon}</span>
+            <span class="treat-name">${t.name}</span>
+            <span class="treat-xp">+${t.xp} XP</span>
+            <span class="treat-price">${t.price} ✦</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- APPARENCES -->
+    <div class="companion-section">
+      <div class="companion-section-title">🎨 Apparences</div>
+      <div class="skins-grid">
+        ${COMPANION_ANIMALS.map(a => {
+          const owned = a.price === 0 || (state.companionSkins || []).includes(a.id);
+          const active = c.animal === a.id;
+          return `<div class="skin-card${active?' active':''}${!owned?' locked':''}" onclick="selectSkin('${a.id}',${a.price})">
+            <span class="skin-animal">${a.emoji}</span>
+            <span class="skin-name">${a.name}</span>
+            <span class="skin-price">${owned ? (active ? '✓ Actif' : 'Possédé') : a.price+' ✦'}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  // Animate XP bar after render
+  setTimeout(() => {
+    const fill = document.getElementById('companion-xp-fill');
+    if (fill) fill.style.width = xpPct + '%';
+  }, 80);
+}
+
+function feedTreat(treatId) {
+  const treat = TREATS.find(t => t.id === treatId);
+  if (!treat || state.points < treat.price) return;
+
+  if (!state.companion) state.companion = { animal:'dog', level:1, xp:0 };
+  const c = state.companion;
+
+  // Deduct points
+  const now = new Date();
+  const mk = getMonthKey(now.getFullYear(), now.getMonth());
+  if (!state.pointsHistory[mk]) state.pointsHistory[mk] = { earned:0, spent:0 };
+  state.pointsHistory[mk].spent += treat.price;
+  state.points -= treat.price;
+
+  // Add XP
+  c.xp = (c.xp || 0) + treat.xp;
+  playSound('check');
+
+  // Happy animation
+  const animalEl = document.getElementById('companion-animal');
+  if (animalEl) {
+    animalEl.classList.remove('happy', 'levelup');
+    void animalEl.offsetWidth;
+    animalEl.classList.add('happy');
+    setTimeout(() => animalEl.classList.remove('happy'), 700);
+  }
+
+  // Check level ups
+  checkCompanionLevelUp();
+  updatePoints();
+  saveState();
+  renderCompanionPanel();
+  showToast(`${treat.icon} +${treat.xp} XP pour ton compagnon !`);
+}
+
+function checkCompanionLevelUp() {
+  const c = state.companion;
+  if (!c || c.level >= 100) return;
+  let leveled = false;
+  while (c.level < 100) {
+    const needed = xpForLevel(c.level);
+    if (c.xp >= needed) {
+      c.xp -= needed;
+      c.level++;
+      leveled = true;
+    } else break;
+  }
+  if (leveled) {
+    // Level up animation + confetti
+    const animalEl = document.getElementById('companion-animal');
+    if (animalEl) {
+      animalEl.classList.remove('happy', 'levelup');
+      void animalEl.offsetWidth;
+      animalEl.classList.add('levelup');
+      setTimeout(() => animalEl.classList.remove('levelup'), 900);
+    }
+    launchConfetti();
+    showToast(`🎉 Niveau ${c.level} atteint !`);
+    // Update bonus pool for new level
+    regenerateBonusIfNeeded();
+  }
+}
+
+function regenerateBonusIfNeeded() {
+  // Force regenerate bonus task to match new level
+  state.bonusTask = null;
+  initBonusTask();
+}
+
+function petCompanion() {
+  const animalEl = document.getElementById('companion-animal');
+  if (!animalEl) return;
+  animalEl.classList.remove('happy');
+  void animalEl.offsetWidth;
+  animalEl.classList.add('happy');
+  setTimeout(() => animalEl.classList.remove('happy'), 700);
+  // Update mood display
+  const moodEl = document.getElementById('companion-mood');
+  if (moodEl) moodEl.textContent = getCompanionMood();
+}
+
+function selectSkin(animalId, price) {
+  if (!state.companionSkins) state.companionSkins = [];
+  const owned = price === 0 || state.companionSkins.includes(animalId);
+  if (!owned) {
+    if (state.points < price) { showToast('Pas assez de points !'); return; }
+    const now = new Date();
+    const mk = getMonthKey(now.getFullYear(), now.getMonth());
+    if (!state.pointsHistory[mk]) state.pointsHistory[mk] = { earned:0, spent:0 };
+    state.pointsHistory[mk].spent += price;
+    state.points -= price;
+    state.companionSkins.push(animalId);
+    const a = COMPANION_ANIMALS.find(x => x.id === animalId);
+    showToast(`🎉 ${a.emoji} ${a.name} débloqué !`);
+    updatePoints();
+  }
+  if (!state.companion) state.companion = { animal:'dog', level:1, xp:0 };
+  state.companion.animal = animalId;
+  saveState();
+  renderCompanionPanel();
 }
 
 // =====================================================

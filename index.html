@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>TaskFlow</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c5cfc'/><polygon points='58,8 28,54 48,54 42,92 72,46 52,46' fill='white'/></svg>"/>
+  <link rel="icon" type="image/svg+xml" id="favicon-link" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%237c5cfc'/><polygon points='58,8 28,54 48,54 42,92 72,46 52,46' fill='white'/></svg>"/>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 </head>
@@ -29,6 +29,7 @@
     <button class="nav-btn" id="btn-stats" onclick="showPanel('stats')"><span class="btn-icon">📈</span><span class="btn-label">Stats</span></button>
     <button class="nav-btn" id="btn-recap" onclick="showPanel('recap')"><span class="btn-icon">📊</span><span class="btn-label">Récap</span></button>
     <button class="nav-btn" id="btn-sync" onclick="showPanel('sync')"><span class="btn-icon">🔗</span><span class="btn-label">Sync</span></button>
+    <button class="nav-btn" id="btn-companion" onclick="showPanel('companion')"><span class="btn-icon">🐾</span><span class="btn-label">Compagnon</span></button>
   </div>
 </nav>
 
@@ -74,9 +75,9 @@
       </div>
     </div>
     <div class="task-list" id="list-etude">
-      <div class="task-item" data-task="etude-1" data-points="5" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Réviser</span></label><span class="task-pts">+5 ✦</span></div>
+      <div class="task-item" data-task="etude-1" data-points="5" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Réviser les cours</span></label><span class="task-pts">+5 ✦</span></div>
       <div class="task-item" data-task="etude-2" data-points="3" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire les exercices de la semaine</span></label><span class="task-pts">+3 ✦</span></div>
-      <div class="task-item" data-task="etude-3" data-points="2" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire l'anglais</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="etude-3" data-points="2" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Réviser l'anglais sur Duolingo</span></label><span class="task-pts">+2 ✦</span></div>
       <div class="task-item" data-task="etude-4" data-points="5" data-cat="etude"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Réviser le code</span></label><span class="task-pts">+5 ✦</span></div>
     </div>
   </div>
@@ -94,30 +95,49 @@
       </div>
     </div>
     <div class="task-list" id="list-musique">
-      <div class="task-item" data-task="musique-1" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Travailler la set liste du groupe</span></label><span class="task-pts">+1 ✦</span></div>
-      <div class="task-item" data-task="musique-2" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Travailler le solo de Hail to the King</span></label><span class="task-pts">+1 ✦</span></div>
-      <div class="task-item" data-task="musique-3" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire un TikTok</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="musique-1" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Pratiquer la set liste de Wayward Ship</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="musique-2" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Pratiquer le solo de Hail to the King</span></label><span class="task-pts">+1 ✦</span></div>
+      <div class="task-item" data-task="musique-3" data-points="1" data-cat="musique"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire un TikTok guitare</span></label><span class="task-pts">+1 ✦</span></div>
     </div>
   </div>
 
-  <div class="category-card" id="cat-autre">
-    <div class="category-header" onclick="toggleCategory('autre')">
+  <div class="category-card" id="cat-sante">
+    <div class="category-header" onclick="toggleCategory('sante')">
       <div class="cat-title-area">
-        <span class="cat-emoji" id="emoji-autre" onclick="openEmojiPicker('autre',event)">⚡</span>
-        <h2 class="cat-title">Autre</h2>
-        <span class="cat-count" id="count-autre">0/5</span>
+        <span class="cat-emoji" id="emoji-sante" onclick="openEmojiPicker('sante',event)">🏃</span>
+        <h2 class="cat-title">Sport &amp; Santé</h2>
+        <span class="cat-count" id="count-sante">0/7</span>
       </div>
       <div class="cat-right">
-        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-autre"></div></div>
-        <span class="chevron" id="chev-autre">▼</span>
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-sante"></div></div>
+        <span class="chevron" id="chev-sante">▼</span>
       </div>
     </div>
-    <div class="task-list" id="list-autre">
-      <div class="task-item" data-task="autre-1" data-points="4" data-cat="autre" data-days="1,2,3,4,5"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire séance de sport</span></label><div class="task-right"><span class="task-badge-days">Lun–Ven</span><span class="task-pts">+4 ✦</span></div></div>
-      <div class="task-item" data-task="autre-2" data-points="2" data-cat="autre"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Travailler le skate</span></label><span class="task-pts">+2 ✦</span></div>
-      <div class="task-item" data-task="autre-3" data-points="5" data-cat="autre"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Prendre le traitement</span></label><span class="task-pts">+5 ✦</span></div>
-      <div class="task-item" data-task="autre-4" data-points="5" data-cat="autre"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Hygiène</span></label><span class="task-pts">+5 ✦</span></div>
-      <div class="task-item" data-task="autre-5" data-points="3" data-cat="autre" data-days="1,2,3,4,5"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Aller au lycée</span></label><div class="task-right"><span class="task-badge-days">Lun–Ven</span><span class="task-pts">+3 ✦</span></div></div>
+    <div class="task-list" id="list-sante">
+      <div class="task-item" data-task="sante-1" data-points="4" data-cat="sante" data-days="1,2,3,4,5"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Faire une séance de sport</span></label><div class="task-right"><span class="task-badge-days">Lun–Ven</span><span class="task-pts">+4 ✦</span></div></div>
+      <div class="task-item" data-task="sante-2" data-points="2" data-cat="sante"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Pratiquer le skate</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="sante-3" data-points="5" data-cat="sante"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Prendre son traitement</span></label><span class="task-pts">+5 ✦</span></div>
+      <div class="task-item" data-task="sante-4" data-points="2" data-cat="sante"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">S'entraîner au Rubik's cube</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="sante-5" data-points="2" data-cat="sante"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Boire 2L d'eau</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="sante-6" data-points="4" data-cat="sante"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Manger 5 fruits et légumes</span></label><span class="task-pts">+4 ✦</span></div>
+      <div class="task-item" data-task="sante-7" data-points="3" data-cat="sante"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Se coucher avant minuit</span></label><span class="task-pts">+3 ✦</span></div>
+    </div>
+  </div>
+
+  <div class="category-card" id="cat-lycee">
+    <div class="category-header" onclick="toggleCategory('lycee')">
+      <div class="cat-title-area">
+        <span class="cat-emoji" id="emoji-lycee" onclick="openEmojiPicker('lycee',event)">🏫</span>
+        <h2 class="cat-title">Lycée</h2>
+        <span class="cat-count" id="count-lycee">0/1</span>
+      </div>
+      <div class="cat-right">
+        <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-lycee"></div></div>
+        <span class="chevron" id="chev-lycee">▼</span>
+      </div>
+    </div>
+    <div class="task-list" id="list-lycee">
+      <div class="task-item" data-task="lycee-1" data-points="3" data-cat="lycee" data-days="1,2,3,4,5"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Aller au lycée</span></label><div class="task-right"><span class="task-badge-days">Lun–Ven</span><span class="task-pts">+3 ✦</span></div></div>
     </div>
   </div>
 
@@ -146,8 +166,8 @@
     <div class="category-header" onclick="toggleCategory('culture')">
       <div class="cat-title-area">
         <span class="cat-emoji" id="emoji-culture" onclick="openEmojiPicker('culture',event)">🎬</span>
-        <h2 class="cat-title">Culture</h2>
-        <span class="cat-count" id="count-culture">0/3</span>
+        <h2 class="cat-title">Culture &amp; Médias</h2>
+        <span class="cat-count" id="count-culture">0/4</span>
       </div>
       <div class="cat-right">
         <div class="cat-progress-bar"><div class="cat-progress-fill" id="prog-culture"></div></div>
@@ -158,6 +178,7 @@
       <div class="task-item" data-task="culture-1" data-points="2" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Regarder un film ou série</span></label><span class="task-pts">+2 ✦</span></div>
       <div class="task-item" data-task="culture-2" data-points="4" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Lire un livre</span></label><span class="task-pts">+4 ✦</span></div>
       <div class="task-item" data-task="culture-3" data-points="2" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Écouter de la musique</span></label><span class="task-pts">+2 ✦</span></div>
+      <div class="task-item" data-task="culture-4" data-points="2" data-cat="culture"><label class="task-label"><input type="checkbox" class="task-check" onchange="handleTask(this)"/><span class="custom-check"></span><span class="task-name">Découvrir un nouvel artiste</span></label><span class="task-pts">+2 ✦</span></div>
     </div>
   </div>
 
@@ -252,6 +273,15 @@
 <div class="panel" id="panel-sync">
   <div class="panel-header"><h2 class="panel-title">🔗 Synchronisation</h2><button class="panel-close" onclick="closePanel()">✕</button></div>
   <div class="sync-body" id="sync-body"></div>
+</div>
+
+<!-- PANEL: COMPAGNON -->
+<div class="panel panel-wide" id="panel-companion">
+  <div class="panel-header">
+    <h2 class="panel-title">🐾 Compagnon</h2>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="companion-body" id="companion-body"></div>
 </div>
 
 <!-- MODALS -->
