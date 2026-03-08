@@ -72,21 +72,24 @@ const bonusPool = [
 ];
 
 const BADGES = [
-  { id:'first_task',   icon:'🌱', name:'Premier pas',      desc:'Cocher ta première tâche',        check: s => s.totalEver >= 1 },
-  { id:'streak3',      icon:'🔥', name:'3 jours de feu',   desc:'3 jours consécutifs actifs',      check: s => s.streak >= 3 },
-  { id:'streak7',      icon:'💥', name:'Semaine parfaite',  desc:'7 jours consécutifs',             check: s => s.streak >= 7 },
-  { id:'streak30',     icon:'🌟', name:'Mois de légende',   desc:'30 jours consécutifs !',          check: s => s.streak >= 30 },
-  { id:'pts100',       icon:'💰', name:'Centurion',         desc:'Gagner 100 points au total',      check: s => s.allTimeEarned >= 100 },
-  { id:'pts500',       icon:'💎', name:'Demi-millénaire',   desc:'500 points au total',             check: s => s.allTimeEarned >= 500 },
-  { id:'pts1000',      icon:'👑', name:'Millionnaire',      desc:'1000 points au total',            check: s => s.allTimeEarned >= 1000 },
-  { id:'tasks50',      icon:'🏅', name:'50 tâches',         desc:'50 tâches complétées',            check: s => s.totalEver >= 50 },
-  { id:'tasks100',     icon:'🎖️',name:'100 tâches',        desc:'100 tâches complétées',           check: s => s.totalEver >= 100 },
-  { id:'tasks200',     icon:'🏆', name:'200 tâches',        desc:'200 tâches accomplies',           check: s => s.totalEver >= 200 },
-  { id:'cat_full',     icon:'⭐', name:'Complétiste',       desc:'Finir toutes les tâches d\'une catégorie un jour', check: s => s.catFull },
-  { id:'all_cats',     icon:'🎯', name:'Touche-à-tout',     desc:'Faire au moins 1 tâche dans 5+ catégories un jour', check: s => s.allCats },
-  { id:'theme_buyer',  icon:'🎨', name:'Fashionista',       desc:'Acheter ton premier thème',       check: s => s.themeBought },
-  { id:'bonus_done',   icon:'⭐', name:'Chanceux',          desc:'Compléter 5 tâches bonus',        check: s => s.bonusDone >= 5 },
-  { id:'night_owl',    icon:'🦉', name:'Oiseau de nuit',    desc:'Obtenir 10 badges',               check: s => s.unlockedBadges >= 10 },
+  { id:'first_task',   icon:'🌱', name:'Premier pas',       desc:'Cocher ta première tâche',                         check: s => s.totalEver >= 1 },
+  { id:'streak3',      icon:'🔥', name:'3 jours de feu',    desc:'3 jours consécutifs actifs',                       check: s => s.streak >= 3 },
+  { id:'streak7',      icon:'💥', name:'Semaine parfaite',   desc:'7 jours consécutifs',                              check: s => s.streak >= 7 },
+  { id:'streak30',     icon:'🌟', name:'Mois de légende',    desc:'30 jours consécutifs !',                           check: s => s.streak >= 30 },
+  { id:'streak365',    icon:'🗓️', name:'Une année entière',  desc:'Garder une série de 365 jours — légendaire !',     check: s => s.streak >= 365 },
+  { id:'pts100',       icon:'💰', name:'Centurion',          desc:'Gagner 100 points au total',                       check: s => s.allTimeEarned >= 100 },
+  { id:'pts500',       icon:'💎', name:'Demi-millénaire',    desc:'500 points au total',                              check: s => s.allTimeEarned >= 500 },
+  { id:'pts1000',      icon:'👑', name:'Millionnaire',       desc:'1000 points au total',                             check: s => s.allTimeEarned >= 1000 },
+  { id:'tasks50',      icon:'🏅', name:'50 tâches',          desc:'50 tâches complétées',                             check: s => s.totalEver >= 50 },
+  { id:'tasks100',     icon:'🎖️', name:'100 tâches',        desc:'100 tâches complétées',                            check: s => s.totalEver >= 100 },
+  { id:'tasks200',     icon:'🏆', name:'200 tâches',         desc:'200 tâches accomplies',                            check: s => s.totalEver >= 200 },
+  { id:'perfect_day',  icon:'🌈', name:'Journée parfaite',   desc:'Faire toutes les tâches disponibles en un jour !', check: s => s.perfectDay },
+  { id:'early_bird',   icon:'🌅', name:'Lève-tôt',           desc:'Faire 5 tâches avant 7h du matin',                check: s => s.earlyBird },
+  { id:'cat_full',     icon:'⭐', name:'Complétiste',        desc:'Finir toutes les tâches d\'une catégorie un jour', check: s => s.catFull },
+  { id:'all_cats',     icon:'🎯', name:'Touche-à-tout',      desc:'Faire au moins 1 tâche dans 5+ catégories un jour',check: s => s.allCats },
+  { id:'theme_buyer',  icon:'🎨', name:'Fashionista',        desc:'Acheter ton premier thème',                        check: s => s.themeBought },
+  { id:'bonus_done',   icon:'⭐', name:'Chanceux',           desc:'Compléter 5 tâches bonus',                         check: s => s.bonusDone >= 5 },
+  { id:'night_owl',    icon:'🦉', name:'Collectionneur',     desc:'Obtenir 10 badges',                                check: s => s.unlockedBadges >= 10 },
 ];
 
 const themeCategories = [
@@ -328,6 +331,14 @@ function handleTask(checkbox) {
     playSound('check');
     showToast(`+${pts} ✦ points gagnés !`);
     burstEffect(item);
+    // Early bird: 5+ real tasks before 7:00
+    const h = new Date().getHours();
+    if (h < 7) {
+      const realToday = Object.keys(state.checkedTasks[today]).filter(k => k !== 'bonus' && state.checkedTasks[today][k]);
+      if (realToday.length >= 5) state._earlyBirdToday = true;
+    }
+    // Check free treat unlock (5 tasks done)
+    checkFreeTreat(today);
     // Check if whole category done
     checkCategoryComplete(cat, today);
   } else {
@@ -408,21 +419,26 @@ function updateAllCounts() {
 // =====================================================
 // ===== STREAK ========================================
 // =====================================================
+// A day counts as "active" for streak only if 3+ real tasks done
+function dayIsActive(key) {
+  const tasks = state.checkedTasks[key] || {};
+  return Object.keys(tasks).filter(k => k !== 'bonus' && tasks[k]).length >= 3;
+}
+
 function getStreakCount() {
   let streak = 0;
   const d = new Date();
   const todayKey = getTodayKey();
-  const hasTodayTask = Object.keys(state.checkedTasks[todayKey] || {}).some(k => k !== 'bonus' && state.checkedTasks[todayKey][k]);
-  if (!hasTodayTask) d.setDate(d.getDate() - 1);
+  const todayActive = dayIsActive(todayKey);
+  if (!todayActive) d.setDate(d.getDate() - 1);
   while (true) {
     const key = getDayKey(d.getFullYear(), d.getMonth(), d.getDate());
-    const tasks = state.checkedTasks[key];
-    if (!tasks || !Object.keys(tasks).some(k => k !== 'bonus' && tasks[k])) break;
+    if (!dayIsActive(key)) break;
     streak++;
     d.setDate(d.getDate() - 1);
     if (streak > 3650) break;
   }
-  if (hasTodayTask) streak = Math.max(streak, 1);
+  if (todayActive) streak = Math.max(streak, 1);
   return streak;
 }
 
@@ -634,6 +650,7 @@ function applyTheme(id) {
   if (state.customBg) document.body.classList.add('has-custom-bg');
   state.activeTheme = id;
   updateFavicon();
+  if (musicOn) loadMusicForTheme(id);
 }
 function renderThemeGrid() {
   const grid = document.getElementById('theme-grid');
@@ -783,7 +800,7 @@ function renderCalendar() {
   for (let d=1;d<=dim;d++) {
     const key = getDayKey(state.calYear, state.calMonth, d);
     const tasks = state.checkedTasks[key] || {};
-    const hasTask = Object.keys(tasks).some(k => k!=='bonus' && tasks[k]);
+    const hasTask = dayIsActive(key);
     const isToday = d===td.getDate() && state.calMonth===td.getMonth() && state.calYear===td.getFullYear();
     const cell = document.createElement('div');
     cell.className = `cal-day${isToday?' today':''}${hasTask?' has-task':''}`;
@@ -887,25 +904,34 @@ document.addEventListener('click', e => {
 function getBadgeStats() {
   const today = getTodayKey();
   const todayTasks = state.checkedTasks[today] || {};
-  // Total ever
+  const todayRealTasks = Object.keys(todayTasks).filter(k => k !== 'bonus' && todayTasks[k]);
+
   let totalEver = 0;
   Object.values(state.checkedTasks).forEach(day => {
     totalEver += Object.keys(day).filter(k => k !== 'bonus' && day[k]).length;
   });
-  // All time earned
   let allTimeEarned = 0;
-  Object.values(state.pointsHistory).forEach(m => { allTimeEarned += m.earned||0; });
-  // Cat full today?
-  let catFull = state._lastCatFull || false;
-  // All cats today (5+ cats)?
-  const todayCats = new Set(Object.keys(todayTasks).filter(k=>k!=='bonus'&&todayTasks[k]).map(k=>k.split('-')[0]));
+  Object.values(state.pointsHistory).forEach(m => { allTimeEarned += m.earned || 0; });
+
+  // Perfect day: all available tasks done today
+  const allTaskIds = Object.keys(taskMeta).filter(id => {
+    const meta = taskMeta[id];
+    if (!meta.days) return true;
+    const dow = new Date().getDay();
+    return meta.days.includes(dow);
+  });
+  const perfectDay = allTaskIds.length > 0 && allTaskIds.every(id => todayTasks[id]);
+
+  // Early bird: 5+ real tasks before 7:00
+  const earlyBird = state._earlyBirdToday || false;
+
+  const catFull = state._lastCatFull || false;
+  const todayCats = new Set(todayRealTasks.map(k => k.split('-')[0]));
   const allCats = todayCats.size >= 5;
+
   return {
     streak: getStreakCount(),
-    totalEver,
-    allTimeEarned,
-    catFull,
-    allCats,
+    totalEver, allTimeEarned, perfectDay, earlyBird, catFull, allCats,
     themeBought: state._themeBought || state.unlockedThemes.length > 2,
     bonusDone: state.bonusDoneCount || 0,
     unlockedBadges: state.unlockedBadges.length,
@@ -1735,6 +1761,115 @@ function selectSkin(animalId, price) {
   state.companion.animal = animalId;
   saveState();
   renderCompanionPanel();
+}
+
+// =====================================================
+// ===== FREE DAILY TREAT ==============================
+// =====================================================
+function checkFreeTreat(today) {
+  if (state.freeTreatClaimedDate === today) return;
+  const tasks = state.checkedTasks[today] || {};
+  const realCount = Object.keys(tasks).filter(k => k !== 'bonus' && tasks[k]).length;
+  if (realCount >= 5) {
+    state.freeTreatClaimedDate = today;
+    if (!state.companion) state.companion = { animal:'dog', level:1, xp:0 };
+    state.companion.xp = (state.companion.xp || 0) + 45; // equivalent repas complet
+    checkCompanionLevelUp();
+    saveState();
+    showToast('🎁 Friandise gratuite offerte à ton compagnon ! (+45 XP)');
+  }
+}
+
+// =====================================================
+// ===== MUSIC SYSTEM (YouTube iframe) =================
+// =====================================================
+
+const THEME_MUSIC = {
+  default:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',    // Lo-fi
+  light:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  aurora:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  sunset:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',     // Chill beats
+  mint:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  rose:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  ocean:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',      // Cinematic
+  gold:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
+  neon:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  slate:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  cherry:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
+  cyber:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  strangerthings:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  piratescaraibes:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  mercredi:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  netflix:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  starwars:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  avatar:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  metallica:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',  // Rock/Metal
+  slipknot:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
+  bfmv:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
+  acdc:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
+  avenged:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
+  nirvana:'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde',
+  cosmos:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  nebula:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  blackhole:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  mars:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  galaxy:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  minecraft:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
+  zelda:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
+  gta:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
+  cyberpunk:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  pokemon:'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC',
+  forest:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  sakura:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  ocean2:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  desert:'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9',
+  arctic:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  halloween:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  vampire:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  witch:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  zombie:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+  ghost:'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-',
+};
+
+const MUSIC_LABELS = {
+  'PLQkQfzsIUwRYKaQ0RV5WLWQ7vkHdIDrn9': 'Lo-fi Hip Hop 🎧',
+  'PLQkQfzsIUwRz6AoLi7vVRgCPxpKGU3YwC': 'Chill Beats 🎮',
+  'PLFPg_2BYRq4q1XK0QeZWcGQgfW4mlE-e-': 'Cinematic Ambient 🌌',
+  'PLMC9KNkIncKseYxDN2niH6glGRWKsLtde': 'Rock / Metal 🤘',
+};
+
+let musicOn = false;
+
+function toggleMusic() {
+  musicOn = !musicOn;
+  updateMusicBtn();
+  if (musicOn) {
+    loadMusicForTheme(state.activeTheme);
+  } else {
+    stopMusic();
+    showToast('🎵 Musique arrêtée');
+  }
+}
+
+function updateMusicBtn() {
+  const btn = document.getElementById('btn-music');
+  if (!btn) return;
+  btn.textContent = musicOn ? '🔊' : '🎵';
+  btn.classList.toggle('active', musicOn);
+}
+
+function loadMusicForTheme(themeId) {
+  const playlistId = THEME_MUSIC[themeId] || THEME_MUSIC['default'];
+  const label = MUSIC_LABELS[playlistId] || 'Musique d\'ambiance';
+  const iframe = document.getElementById('music-iframe');
+  if (!iframe) return;
+  iframe.src = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&loop=1&mute=0`;
+  if (musicOn) showToast(`🎵 ${label}`);
+}
+
+function stopMusic() {
+  const iframe = document.getElementById('music-iframe');
+  if (iframe) iframe.src = '';
 }
 
 // =====================================================

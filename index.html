@@ -22,14 +22,15 @@
     <span class="points-label">pts</span>
   </div>
   <div class="nav-right">
-    <button class="nav-btn sound-btn" id="btn-sound" onclick="toggleSound()" title="Son">🔔</button>
-    <button class="nav-btn" id="btn-theme" onclick="showPanel('theme')"><span class="btn-icon">🎨</span><span class="btn-label">Thèmes</span></button>
-    <button class="nav-btn" id="btn-shop" onclick="showPanel('shop')"><span class="btn-icon">🛍️</span><span class="btn-label">Boutique</span></button>
+    <button class="nav-btn" id="btn-companion" onclick="showPanel('companion')"><span class="btn-icon">🐾</span><span class="btn-label">Compagnon</span></button>
     <button class="nav-btn" id="btn-calendar" onclick="showPanel('calendar')"><span class="btn-icon">🗓️</span><span class="btn-label">Calendrier</span></button>
     <button class="nav-btn" id="btn-stats" onclick="showPanel('stats')"><span class="btn-icon">📈</span><span class="btn-label">Stats</span></button>
     <button class="nav-btn" id="btn-recap" onclick="showPanel('recap')"><span class="btn-icon">📊</span><span class="btn-label">Récap</span></button>
+    <button class="nav-btn" id="btn-theme" onclick="showPanel('theme')"><span class="btn-icon">🎨</span><span class="btn-label">Thèmes</span></button>
+    <button class="nav-btn" id="btn-shop" onclick="showPanel('shop')"><span class="btn-icon">🛍️</span><span class="btn-label">Boutique</span></button>
     <button class="nav-btn" id="btn-sync" onclick="showPanel('sync')"><span class="btn-icon">🔗</span><span class="btn-label">Sync</span></button>
-    <button class="nav-btn" id="btn-companion" onclick="showPanel('companion')"><span class="btn-icon">🐾</span><span class="btn-label">Compagnon</span></button>
+    <button class="nav-btn sound-btn" id="btn-music" onclick="toggleMusic()" title="Musique d'ambiance">🎵</button>
+    <button class="nav-btn sound-btn" id="btn-sound" onclick="toggleSound()" title="Son">🔔</button>
   </div>
 </nav>
 
@@ -328,6 +329,12 @@
 
 <!-- CONFETTI CANVAS -->
 <canvas id="confetti-canvas"></canvas>
+
+<!-- MUSIC PLAYER (hidden YouTube iframe) -->
+<div style="position:fixed;bottom:-300px;left:0;width:1px;height:1px;overflow:hidden;pointer-events:none">
+  <iframe id="music-iframe" width="1" height="1" frameborder="0"
+    allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 
 <!-- NOTIFICATION PANEL inside settings (rendered in sync body) -->
 <div class="toast" id="toast"></div>
